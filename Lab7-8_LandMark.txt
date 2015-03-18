@@ -1,0 +1,6 @@
+Brandon Aubrey, Tyler Sammons, Morris LaGrand
+Pokemon
+
+Each Person Finish SDL tutorial on Lazy Foo through 26 - 15(5 each)
+Each Person Put compilable basic SDL program in dropbox - 15(5 each)
+Make working repoistory that everyone can commit to -  10
