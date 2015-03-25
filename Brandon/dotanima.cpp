@@ -11,14 +11,14 @@ int main( int argc, char* args[])
 {
   //screen surface
   SDL_Surface* screen = NULL;
-  SDL_Surface* dot = SDL_LoadBMP("x.bmp"); 
+  SDL_Surface* dot = SDL_LoadBMP("charmander.bmp"); 
   
   //screen dimensions
   const int sWidth = 640;
   const int sHeight = 480;
   //dot dimensions
   const int dWidth = 20;
-  const int dHeight = 20;
+  const int dHeight = 25;
 
   //position of dot
   int x = 0;
@@ -42,7 +42,7 @@ int main( int argc, char* args[])
 
   for(int i = 0; i <= 100; i++)
   {
-    SDL_FillRect(screen, &dst, SDL_MapRGB(screen->format, 0, 0, 0));
+    SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 255, 255, 255));
     //the dot(rect)
 
     dst.x = x;
@@ -55,7 +55,7 @@ int main( int argc, char* args[])
     src.w = dWidth;
     src.h = dHeight;
 
-    SDL_BlitSurface(dot , &src, screen, &dst);
+    SDL_BlitSurface(dot , NULL, screen, &dst);
     x += xVel;
     y += yVel;
 
