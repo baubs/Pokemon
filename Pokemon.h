@@ -15,16 +15,20 @@ enum status {normal, burned, poisoned, asleep, paralyzed, frozen, fainted};
 //enumeration for indexes of stat array
 enum stats {HP, maxHP, atk, def, spAtk, spDef};
 
+//enumeration for types of move/pokemon
+enum types {Normal, Grass, Water, Fire, Flying, Fight, Psychic, Bug, Poison, Eletric, Rock, Ground, Ghost, Dark, Ice, Dragon};
+
 class Pokemon
 {
   public:
     Pokemon(); //default constructor
-    Pokemon(string, string, int, int, int[6], int[6], status);//, int[4]); //nondefault constr
+    Pokemon(int, string, string, int, int, int[6], int[6], status, types);//, int[4]); //nondefault constr
     void levelup();
     void gainexp(int);
     void changeStatus(status);
     void reduceHP(int);
     status getStatus();
+    types getType();
     int getLevel();
     int getExp();
     int getMaxExp();
@@ -34,12 +38,18 @@ class Pokemon
     int getDef();
     int getSpAtk();
     int getSpDef();
+    int checkTyping(types);       //compares type to pokemon type, returns 1=effective, 0=normal, -1=resistant
     string getName();
     string getNickName();
+    string getStatusText();
+    string getTypeText(types);
+    int getNumber();
     void disp();
   private:
+    int number;
     string name;
     string nickname;
+    types type;
     int level;
     int exp;  
     int nxtLev;  //exp needed to gain level

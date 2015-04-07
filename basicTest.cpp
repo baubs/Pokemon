@@ -23,7 +23,7 @@ int main()
   muls[spAtk] = 1;
   muls[spDef] = 1;
 
-  Pokemon blue(1, "Squirtle", "blue", 1, 10, stats, muls, normal);
+  Pokemon blue(1, "Squirtle", "blue", 1, 10, stats, muls, normal, Ghost);
   blue.disp();
   cout << endl;
 
@@ -32,5 +32,17 @@ int main()
   blue.reduceHP(19);
   blue.disp();
  
+    
+  int val = blue.checkTyping(Normal);
+  if(val == 1)
+    cout << "Type: " <<  blue.getTypeText(Normal) << " is super effective." << endl;
+  else if(val == 2)
+    cout << "Type: " << blue.getTypeText(Normal) << " has no effect." << endl;
+  else if(val == 0)
+    cout << "Type: " << blue.getTypeText(Normal) << " has normal effect." << endl;
+  else
+    cout << "Type: " << blue.getTypeText(Normal) << " is not very effective." << endl;
+
+
   return 0;
 }

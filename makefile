@@ -1,11 +1,11 @@
-all:	main
+all:	basicTest
 
-main: main.o Pokemon.o
-	g++ main.o Pokemon.o -o main
+basicTest: basicTest.o Pokemon.o
+	g++ basicTest.o Pokemon.o -o basicTest
 
-main.o: main.cpp
-	g++ -c main.cpp
+basicTest.o: basicTest.cpp
+	g++ -c basicTest.cpp
 Pokemon.o:  Pokemon.cpp
 	g++ -c Pokemon.cpp
 clean:
-	rm -f *.o main
+	rm -f *.o basicTest
