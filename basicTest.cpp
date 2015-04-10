@@ -6,8 +6,8 @@
 
 int main()
 {
-  int stats[6];
-  int muls[6];
+  int stats[7];
+  int muls[7];
 
   stats[HP] = 16;
   stats[maxHP] = 16;
@@ -15,6 +15,7 @@ int main()
   stats[def] = 10;
   stats[spAtk] = 7;
   stats[spDef] = 5;
+  stats[speed] = 3;
 
   muls[HP] = 0;
   muls[maxHP] = 2;
@@ -22,15 +23,17 @@ int main()
   muls[def] = 2;
   muls[spAtk] = 1;
   muls[spDef] = 1;
+  muls[speed] = 1;
 
-  Pokemon blue(1, "Squirtle", "blue", 1, 10, stats, muls, normal, Ghost);
+  Pokemon blue(76);
+  //Pokemon blue(1, "Squirtle", "blue", 1, 10, stats, muls, normal, Ghost);
   blue.disp();
   cout << endl;
 
   blue.gainexp(5000);
   blue.changeStatus(asleep);
   blue.reduceHP(19);
-  blue.disp();
+  //blue.disp();
  
     
   int val = blue.checkTyping(Normal);

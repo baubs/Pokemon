@@ -4,6 +4,8 @@
 
 #include <iostream>
 #include <string>
+#include <fstream>
+#include <sstream>
 #include "Pokemon.h"
 //#include "move.h"
 using namespace std;
@@ -23,6 +25,7 @@ Pokemon:: Pokemon()
   stats[def] = 1;
   stats[spAtk] = 1;
   stats[spDef] = 1;
+  stats[speed] = 1;
   mults[HP] = 0;      //do not want to add on to current HP
   mults[maxHP] = 2;
   mults[atk] = 1;
@@ -34,7 +37,7 @@ Pokemon:: Pokemon()
 
 
 //non default constructor 
-Pokemon:: Pokemon(int num, string n, string nn, int lev, int nxtLevel,int stat[6], int muls[6],status eff, types t)
+Pokemon:: Pokemon(int num, string n, string nn, int lev, int nxtLevel,int stat[7], int muls[7],status eff, types t)
 {
   number = num;
   name = n;
@@ -44,13 +47,90 @@ Pokemon:: Pokemon(int num, string n, string nn, int lev, int nxtLevel,int stat[6
   nxtLev = nxtLevel;
   type = t;
   
-  for(int i = 0; i < 6; i ++)
+  for(int i = 0; i < 7; i ++)
   {
     stats[i] = stat[i];
     mults[i] = muls[i];
   }
 
   effect = eff;
+}
+
+//Constructor only takes int and loads from file Pokelist
+Pokemon::Pokemon(int num)
+{
+  if(num < 1 || num > 150)
+  {
+     cout << "Number should be between 1-150" << endl;
+     return;
+  }
+  
+  string trash, typeName;
+  ifstream infile;
+  infile.open("PokeList.txt");
+
+  if (infile.is_open())
+  {
+    getline(infile, trash);       //gets the header line out of the way
+    for(int i = 0; i < num; i++)  //gets all the way up to the poke of intrest
+    {
+      getline(infile, trash); 
+    }
+
+    //using string stream 
+    stringstream ss;
+    ss << trash;
+    ss >> number >> name >> typeName >> stats[HP] >> stats[atk] >> stats[def];
+    ss >> stats[spAtk] >> stats[spDef] >> stats[speed];
+
+  }
+  nickname = name;
+  level = 1;
+  exp = 0;
+  nxtLev = 100;
+  stats[maxHP] = stats[HP];
+  effect = normal;
+  typeFromText(typeName);
+}
+
+//helps Pokemon constructor that loads from a file
+void Pokemon::typeFromText(string t)
+{
+    if(t == "Normal")
+      type = Normal;
+    else if(t == "Grass")
+      type = Grass;
+    else if(t == "Water")
+      type = Water;
+    else if(t == "Fire")
+      type = Fire;
+    else if(t == "Flying")
+      type = Flying;
+    else if(t == "Fight")
+      type = Fight;
+    else if(t == "Psychic")
+      type = Psychic;
+    else if(t == "Bug")
+      type = Bug;
+    else if(t == "Poison")
+      type = Poison;
+    else if(t == "Eletric")
+      type = Eletric;
+    else if(t == "Rock")
+      type = Rock;
+    else if(t == "Ground")
+      type = Ground;
+    else if(t == "Ghost")
+      type = Ghost;
+    else if(t == "Dark")
+      type = Dark;
+    else if(t == "Ice")
+      type = Ice;
+    else if(t == "Dragon")
+      type = Dragon;
+    else 
+      type = Normal;
+  
 }
 
 //level up the pokemon
@@ -66,6 +146,7 @@ void Pokemon:: levelup()
   stats[def] += mults[def];
   stats[spAtk] += mults[spAtk];
   stats[spDef] += mults[spDef];
+  stats[speed] += mults[speed];
 }
 
 //giving a pokmon exp
@@ -160,6 +241,11 @@ int Pokemon:: getSpAtk()
 int Pokemon:: getSpDef()
 {
   return stats[spDef];
+}
+
+int Pokemon:: getSpeed()
+{
+  return stats[speed];
 }
 
 int Pokemon::getNumber()
@@ -271,7 +357,7 @@ void Pokemon::disp()
   cout << "Type: " << getTypeText(getType()) << ", Level: " << getLevel() << endl;
   cout << "Status: " << getStatusText() << endl;
   cout << "EXP: " << getExp() << "/" << getMaxExp() << endl;
-  cout << "HP: " << getHP() << "/" << getMaxHP() << endl;
+  cout << "HP: " << getHP() << "/" << getMaxHP() << "     Speed: " << getSpeed() << endl;
   cout << "Atk: " << getAtk() << "\t" << "Def: " << getDef() << endl;
   cout << "SpA: " << getSpAtk() << "\t" << "SpD: " << getSpDef() << endl;
 }
@@ -374,7 +460,7 @@ int Pokemon::checkTyping(types t)
       break;
 
     case Rock:
-      if(t == Water || t == Ground || t == Fight | Grass)
+      if(t == Water || t == Ground || t == Fight || t ==  Grass)
         return 1;
       else if(t == Normal || t == Fire || t == Poison || t == Flying)
         return -1;
