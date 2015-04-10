@@ -1,0 +1,34 @@
+//Brandon Aubrey, Morris LaGrand, Tyler Sammons
+//base class for moves
+//4/7/2015
+
+#ifndef MOVE_H
+#define MOVE_H
+
+#include <iostream>
+#include <string>
+#include "Pokemon.h"
+
+using namespace std;
+
+enum attack {abosrb, acid, agility, bite, blizzard, body_slam};
+
+class move {
+
+
+	public:
+		move()
+
+	
+
+	private:
+		int pwr[6];	//power of the attack
+		int acc[6];	//accuracy of the attack
+		int pp[6];		//power points of hte attack
+
+
+
+}
+
+#endif
+

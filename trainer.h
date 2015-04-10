@@ -9,7 +9,7 @@ class Trainer {
 		void pick_move;	//allows trainer to select move in battle
 		void pick_pokemon;	//allows trainer to select pokemon in battle
 		void poke_stats;	//allows trainer to check stats in battle
-		void switch_pokemon;	//allows trainer to switch order of pokemon
+		Pokemon switch_pokemon(int m);	//allows trainer to switch order of pokemon
 
 
 	private:
