@@ -14,7 +14,7 @@ using namespace std;
 //default constructor
 move::move(int numb) {
 
-	string trash, typeName;
+	string trash, typeName, statusName;
         ifstream infile;
         infile.open("moveList.txt");
 
@@ -29,7 +29,8 @@ move::move(int numb) {
                 //using string stream
                 stringstream ss;
                 ss << trash;
-                ss >> number >> mve >> type >> pwr >> acc >> pp >> stat >> prob;
+                ss >> number >> mve >> typeName >> pwr >> acc >> pp >> statusName >> prob;
+                typeFromText(typeName);
 	}
 
 	curr_pp = pp;
@@ -108,3 +109,45 @@ int move::reduce_pp() {
 int move:: reset_pp() {
 	curr_pp = pp;
 }
+
+
+//sets type value given a text, used in loading function
+void move::typeFromText(string t)
+{
+	if(t == "Normal")
+		type = Normal;
+	else if(t == "Grass")
+		type = Grass;
+	else if(t == "Water")
+		type = Water;
+	else if(t == "Fire")
+		type = Fire;
+	else if(t == "Flying")
+		type = Flying;
+	else if(t == "Fight")
+		type = Fight;
+	else if(t == "Psychic")
+		type = Psychic;
+	else if(t == "Bug")
+		type = Bug;
+	else if(t == "Poison")
+		type = Poison;
+	else if(t == "Eletric")
+		type = Eletric;
+	else if(t == "Rock")
+		type = Rock;
+	else if(t == "Ground")
+		type = Ground;
+	else if(t == "Ghost")
+		type = Ghost;
+	else if(t == "Dark")
+		type = Dark;
+	else if(t == "Ice")
+		type = Ice;
+	else if(t == "Dragon")
+		type = Dragon;
+	else
+      type = Normal;
+
+}
+

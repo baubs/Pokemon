@@ -29,7 +29,7 @@ class move {
 		void display();	//display function
 		int reduce_pp();	//reduce the pp of the move
 		int reset_pp();	//reset the value of the pp
-
+		void typeFromText(string);
 	
 
 	private:
