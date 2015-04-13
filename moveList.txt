@@ -1,0 +1,164 @@
+#	move		Type	Pwr	Acc	PP	status	prob
+1	Absorb		Grass	20	100	25	normal	1	
+2	Acid		Poison	40	100	30	normal	1	
+3	Agility		Psychic	0	0	30	normal	1	
+4	Amnesia		Psychic	0	0	20	normal	1	
+5	Aurora Beam	Ice	65	100	20	normal	1	
+6	Barrage		Normal	15	85	20	normal	1
+7	Barrier		Psychic	0	0	20	normal 	1
+8	Bide		Normal	0	0	10	normal 	1
+9	Bite		Normal	60	100	25	normal	1
+10	Blizzard	Ice	110	70	5	frozen	.25
+11	Body Slam	Normal	85	100	15	normal	1
+12	Bone Club	Ground	65	85	20	normal	1
+13	Bonemerang	Ground	50	90	10	normal	1
+14	Bubble		Water	40	100	30	normal	1
+15	Bubble Beam	Water	65	100	20	normal 	1
+16	Clamp		Water	35	85	10	normal	1
+17	Comet Punch	Normal	18	85	15	normal	1
+18	Confuse Ray	Ghost	0	100	10	normal	1
+19	Confusion	Psychic	50	100	25	normal	1
+20	Constrict	Normal	10	100	35	normal	1
+21	Conversion	Normal	0	0	30	normal	1
+22	Counter		Fight	0	100	20	normal	1
+23	Crabhammer	Water	100	90	10	normal	1
+24	Cut		Normal	50	95	30	normal	1
+25	Defense Curl	Normal	0	0	40	normal	1
+26	Dig		Ground	80	100	10	normal	1
+27	Disable		Normal	0	100	20	normal	1
+28	Dizzy Punch	Normal	70	100	10	normal	1
+29	Double Kick	Fight	30	100	30	normal	1
+30	Double Slap	Normal	15	85	10	normal	1
+31	Double Team	Normal	0	0	15	normal	1
+32	Double Edge	Normal	120	100	15	normal	1
+33	Dragon Rage	Dragon	0	100	10	normal	1
+34	Dream Eater	Psychic	100	100	15	normal	1
+35	Drill Peck	Flying	80	100	20	normal	1
+36	Earthquake	Ground	100	100	10	normal	1
+37	Egg Bomb	Normal	100	75	10	normal	1
+38	Ember		Fire	40	100	25	burned .25
+39	Explosion	Normal	250	100	5	normal	1
+40	Fire Blast	Fire	110	85	5	burned	.25
+41	Fire Punch	Fire	75	100	15	burned	.25
+42	Fire Spin	Fire	35	85	15	burned	.25
+43	Fissure		Ground	0	25	5	fainted	1
+44	Flamethrower	Fire	90	100	15	burned	.25
+45	Flash		Normal	0	100	20	normal	1
+46	Fly		Flying	90	95	15	normal	1
+47	Focus Energy	Normal	0	0	30	normal	1
+48	Fury Attack	Normal	15	85	20	normal	1
+49	Fury Swipes	Normal	18	80	15	normal	1
+50	Glare		Normal	0	100	30	normal	1
+51	Growl		Normal	0	100	40	normal	1
+52	Growth		Normal	0	0	40	normal	1
+53	Guillotine	Normal	0	25	5	fainted	1
+54	Gust		Flying	40	100	35	normal	1
+55	Harden		Normal	0	0	30	normal	1
+56	Haze		Ice	0	0	30	normal	1
+57	HeadButt	Normal	70	100	15	normal	1
+58	High Jump Kick	Fight	130	90	10	normal	1
+59	Horn Attack	Normal	65	100	25	normal	1
+60	Horn Drill	Normal	0 	25	5	normal	1
+61	Hydro Pump	Water	110	80	5	normal	1
+62	Hyper Beam	Normal	150	90	5	normal	1
+63	Hyper Fang	Normal	80	90	15	normal	1
+64	Hypnosis	Psychic	0	60	20	asleep	1
+65	Ice Beam	Ice	90	100	10	frozen	.25
+66	Ice Punch	Ice	75	100	15	frozen	.25
+67	Jump Kick	Fight	100	95	10	normal	1
+68	Karate Chop	Fight	50	100	25	normal	1
+69	Kinesis		Psychic	0	80	15	normal	1
+70	Leech Life	Bug	20	100	15	normal	1
+71	Leech Seed	Grass	0	90	10	normal	1
+72	Leer		Normal	0	100	30	normal	1
+73	Lick		Ghost	30	100	30	paralyzed	.25
+74	Light Screen	Psychic	0	0	30	normal	1
+75	Lovely Kiss	Normal	0	75	10	asleep	1
+76	Low Kick	Fight	0	100	20	normal	1
+77	Meditate	Psychic	0	0	40	normal	1
+78	Mega Drain	Grass	40	100	15	normal	1
+79	Mega Kick	Normal	120	75	5	normal	1
+80	Mega Punch	Normal	80	85	20	normal	1
+81	Metronome	Normal	0	0	10	normal	1
+82	Mimic		Normal	0	0	10	normal	1
+83	Minimize	Normal	0	0	10	normal	1
+84	Mirror	Move	Flying	0	0	20	normal	1
+85	Mist		Ice	0	0	30	normal	1
+86	Night Shade	Ghost	0	100	15	normal	1
+87	Pay Day		Normal	40	100	20	normal	1
+88	Peck		Flying	35	100	35	normal	1
+89	Petal Dance	Grass	120	100	10	normal	1
+90	Pin Missle	Bug	25	85	20	normal	1
+91	Poison Gas	Poison	0	90	40	poisoned	1
+92	Poison Powder	Poison	0	75	35	poisoned	1
+93	Poison Sting	Poison	15	100	35	poisoned	.25
+94	Pound		Normal	40	100	35	normal	1
+95	Psybeam		Psychic	65	100	20	normal	1
+96	Psychic		Psychic	90	100	10	normal	1
+97	Psywave		Psychic	0	80	15	normal	1
+98	Quick Attack	Normal	40	100	30	normal	1
+99	Rage		Normal	20	100	20	normal	1
+100	Razor Leaf	Grass	55	95	25	normal	1
+101	Razor Wind	Normal	80	100	10	normal	1
+102	Recover		Normal	0	0	10	normal	1
+103	Reflect		Psychic	0	0	20	normal	1
+104	Rest		Psychic	0	0	10	normal	1
+105	Roar		Normal	0	0	20	normal	1
+106	Rock Slide	Rock	75	90	10	normal	1
+107	Rock Throw	Rock	50	90	15	normal	1
+108	Rolling Kick	Fight	60	85	15	normal	1
+109	Sand Attack	Ground	0	100	15	normal	1
+110	Scratch		Normal	40	100	35	normal	1
+111	Screech		Normal	0	85	40	normal	1
+112	Seismic Toss	Fight	0	100	20	normal	1
+113	Self-Destruct	Normal	200	100	5	normal	1
+114	Sharpen		Normal	0	0	30	normal	1
+115	Sing		Normal	0	55	15	asleep	1
+116	Skull Bash	Normal	130	100	10	normal	1
+117	Sky Attack	Flying	140	90	5	normal	1
+118	Slam		Normal	80	75	20	normal	1
+119	Slash		Normal	70	100	20	normal	1
+120	Sleep Powder	Grass	0	75	15	asleep	1
+121	Sludge		Poison	65	100	20	poisoned	.25
+122	Smog		Poison	30	70	20	poisoned	.25
+123	Smokescreen	Normal	0	100	20	normal	1
+124	Soft-Boiled	Normal	0	0	10	normal	1
+125	Solar Beam	Grass	120	100	10	normal	1
+126	Sonic Boom	Normal	0	90	20	normal	1
+127	Spike Cannon	Normal	20	100	15	normal	1
+128	Splash		Normal	0	0	40	normal	1
+129	Spore		Grass	0	100	15	asleep	1
+130	Stomp		Normal	65	100	20	normal	1
+131	Strength	Normal	80	100	15	normal	1
+132	String Shot	Bug	0	95	40	normal	1
+133	Struggle	Normal	50	100	0	normal	1
+134	Stun Spore	Grass	0	75	30	paralyzed	1
+135	Submission	Fight	80	80	25	normal	1
+136	Substitute	Normal	0	0	10	normal	1
+137	Super Fang	Normal	0	90	10	normal	1
+138	Supersonic	Normal	0	55	20	normal	1
+139	Surf		Water	90	100	15	normal	1
+140	Swift		Normal	60	200	20	normal	1
+141	Swords Dance	Normal	0	0	20	normal	1
+142	Tackle		Normal	50	100	35	normal	1
+143	Tail Whip	Normal	0	100	30	normal	1
+144	Take Down	Normal	90	85	20	normal	1
+145	Teleport	Psychic	0	0	20	normal	1
+146	Thrash		Normal	120	100	10	normal	1
+147	Thunder		Eletric	110	70	10	paralyzed	.25
+148	Thunder Punch	Eletric	75	100	15	paralyzed	.25
+149	Thunder Shock	Eletric	40	100	30	paralyzed	.25
+150	Thunder Wave	Eletric	0	100	20	paralyzed	1
+151	Thunderbolt	Eletric	90	100	15	paralyzed	.25
+152	Toxic		Poison	0	90	10	poisoned	1
+153	Transform	Normal	0	0	10	normal	1
+154	Tri Attack	Normal	80	100	10	normal	1
+155	Twineedle	Bug	25	100	20	normal	1
+156	Vice Grip	Normal	55	100	20	normal	1
+157	Vine Whip	Grass	45	100	25	normal	1
+158	Water Gun	Water	40	100	25	normal	1
+159	Waterfall	Water	80	100	15	normal	1
+160	Whirlwind	Normal	0	0	20	normal	1
+161	Wing Attack	Flying	60	100	35	normal	1
+162	Withdraw	Water	0	0	40	normal	1
+163	Wrap		Normal	15	90	20	normal	1
