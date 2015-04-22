@@ -149,3 +149,4 @@
 148 Dragonair  Dragon  61  84  65  70  70  70       2  3   2   2   2    2
 149 Dragonite  Dragon  91  134 95  100 100 80       4  6   4   4   4    3
 150 Mewtwo     Psychic 106 110 90  154 90  130      4  4   3   7   3    6
+151 Brandon    Normal  250 250 250 200 350 300      7  8   9   9   9    1

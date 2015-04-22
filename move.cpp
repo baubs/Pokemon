@@ -6,12 +6,14 @@
 #include <string>
 #include <fstream>
 #include <sstream>
-#include "Pokemon.h"
+//#include "Pokemon.h"
 #include "move.h"
 
 using namespace std;
 
-//default constructor
+
+
+//non-default constructor
 move::move(int numb) {
 
 	string trash, typeName, statusName;
@@ -29,8 +31,9 @@ move::move(int numb) {
                 //using string stream
                 stringstream ss;
                 ss << trash;
-                ss >> number >> mve >> typeName >> pwr >> acc >> pp >> statusName >> prob;
+                ss >> number >> mve >> typeName >> pwr >> acc >> pp >> statusName >> prob>>specialTag;
                 typeFromText(typeName);
+		typeFromText_2(statusName);
 	}
 
 	curr_pp = pp;
@@ -38,7 +41,7 @@ move::move(int numb) {
 }
 
 //non-default constructor
-move::move(int num, string mv, string tpe, int power, int accur, int pPoint, status st, int Probab, int critical) {
+move::move(int num, string mv, types tpe, int power, int accur, int pPoint, status st, float Probab) {
 	number = num;	//setting number equal to the num (getting the number of the move)
 	mve = mv;	//setting move = mve (getting the name of hte move)
 	type = tpe;	//setting type = tpe (getting th
@@ -46,12 +49,12 @@ move::move(int num, string mv, string tpe, int power, int accur, int pPoint, sta
 	acc = accur;	//setting acc equal to the accuracy
 	pp = pPoint;	//setting pp equal to pPoint
 	prob = Probab;	//setting prob equal to probab
-	crit = critical; 
 	curr_pp = pp;
 	stat = st;
 }
 
-void move::load_move(int m) {
+move::move() {
+	number = 1;
 
 }
 
@@ -80,20 +83,20 @@ status move::get_status() {
 }
 
 //returns the probability of the status change
-int move::get_prob() {
+float move::get_prob() {
 
 	return prob;
 }
 
 //returning the chance of a critical hit
-int move::get_crit() {
+float move::get_crit() {
 
 	return crit;
 }
 
 void move::display() {
 
-	cout<<number<<mve;
+	cout<<number<<" "<<mve<<" "<<getTypeText(type)<<" "<<pwr<<" "<<acc<<" "<<pp<<" "<<getStatusText()<<" "<<specialTag<<endl;
 
 }
 
@@ -103,6 +106,11 @@ int move::reduce_pp() {
 	curr_pp = curr_pp - 1;	//subtracts 1 from the current pp after a move is used
 	return curr_pp;
 
+}
+
+string move::getName()
+{
+	return mve;
 }
 
 //resets the current pp to the value of the pp
@@ -151,3 +159,129 @@ void move::typeFromText(string t)
 
 }
 
+//returns text version of status
+string move::getStatusText()
+{
+  string toRet;
+  switch(stat)
+  {
+    case normal:
+      toRet = "Normal";
+      break;
+    case burned:
+      toRet = "Burned";
+      break;
+    case poisoned:
+      toRet = "Poisoned";
+      break;
+    case asleep:
+      toRet = "Sleep";
+      break;
+    case paralyzed:
+      toRet = "Paralyzed";
+      break;
+    case frozen:
+      toRet = "Frozen";
+      break;
+    case fainted:
+      toRet = "Faint";
+      break;
+    default:
+      toRet = "ERROR";
+      break;
+  }
+  return toRet;
+}
+
+//returns type in text
+string move::getTypeText(types t)
+{
+  string toRet;
+  switch(t)
+  {
+    case Normal:
+      toRet = "Normal";
+      break;
+    case Grass:
+      toRet = "Grass";
+      break;
+    case Water:
+      toRet = "Water";
+      break;
+    case Fire:
+      toRet = "Fire";
+      break;
+    case Flying:
+      toRet = "Flying";
+      break;
+    case Fight:
+      toRet = "Fight";
+      break;
+    case Psychic:
+      toRet = "Psychic";
+      break;
+    case Bug:
+      toRet = "Bug";
+      break;
+    case Poison:
+      toRet = "Poison";
+      break;
+    case Eletric:
+      toRet = "Eletric";
+      break;
+    case Rock:
+      toRet = "Rock";
+      break;
+    case Ground:
+      toRet = "Ground";
+      break;
+    case Ghost:
+      toRet = "Ghost";
+      break;
+    case Dark:
+      toRet = "Dark";
+      break;
+    case Ice:
+      toRet = "Ice";
+      break;
+    case Dragon:
+      toRet = "Dragon";
+      break;
+  }
+  return toRet;
+}
+
+void move::typeFromText_2(string t) {
+	
+	if (t == "normal") stat = normal;
+	
+	else if (t == "burned") stat = burned;
+
+	else if (t == "poisoned") stat = poisoned;
+
+	else if (t == "asleep") stat = asleep;
+
+	else if (t == "paralyzed") stat = paralyzed;
+
+	else if (t == "frozen") stat = frozen;
+
+	else if (t == "fainted") stat = fainted;
+
+	else stat = normal;
+}
+
+void move::BattleDisplay() {
+
+	cout<<mve<<endl;
+	cout<<getTypeText(type)<<" PP "<<curr_pp<<"/"<<pp<<endl;
+}
+
+int move::getSpecial() {
+
+	return specialTag;
+}
+
+types move::get_type() {
+
+	return type;
+}

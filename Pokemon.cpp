@@ -6,12 +6,16 @@
 #include <string>
 #include <fstream>
 #include <sstream>
+#include <cstdlib>
+#include <math.h>
 #include "Pokemon.h"
-//#include "move.h"
+#include "move.h"
+#include "enums.h"
 using namespace std;
 
 Pokemon:: Pokemon()
 {
+  srand(time(NULL));
   name = "Pikachu";
   nickname = "Pika";
   type = Eletric;
@@ -39,6 +43,8 @@ Pokemon:: Pokemon()
 //non default constructor 
 Pokemon:: Pokemon(int num, string n, string nn, int lev, int nxtLevel,int stat[7], int muls[7],status eff, types t)
 {
+  srand(time(NULL)); 
+   
   number = num;
   name = n;
   nickname = nn;
@@ -56,9 +62,16 @@ Pokemon:: Pokemon(int num, string n, string nn, int lev, int nxtLevel,int stat[7
   effect = eff;
 }
 
+//destructor
+Pokemon::~Pokemon()
+{
+  delete []moveSet;
+}
+
 //Constructor only takes int and loads from file Pokelist
 Pokemon::Pokemon(int num)
 {
+  srand(time(NULL));
   if(num < 1 || num > 150)
   {
      cout << "Number should be between 1-150" << endl;
@@ -82,6 +95,7 @@ Pokemon::Pokemon(int num)
     ss << trash;
     ss >> number >> name >> typeName >> stats[HP] >> stats[atk] >> stats[def];
     ss >> stats[spAtk] >> stats[spDef] >> stats[speed];
+    ss >> mults[HP] >> mults[atk] >> mults[def] >> mults[spAtk] >> mults[spDef] >> mults[speed]; 
 
   }
   nickname = name;
@@ -91,7 +105,148 @@ Pokemon::Pokemon(int num)
   stats[maxHP] = stats[HP];
   effect = normal;
   typeFromText(typeName);
+  moveSet = new move[4];
 }
+
+void Pokemon::LoadMoves(int index, int moveNumber) {
+  moveSet[index] = move(moveNumber);
+}
+
+
+//algorithm  for using move on a pokemon
+void Pokemon::useMove(int index, Pokemon &other)
+{
+	int attackPow;     //atk stat
+	int defensePow;    //def stat
+	double typeBonus;  //1.5 or 1
+	int random = (rand()%38)+217;//random num b/w 217-255
+	int hit = (rand()%100);      //random number to check if move hit or not
+	status s = moveSet[index].get_status();   //gets status effect of move
+
+	//checks typing effectivness against target type
+	double typeEffect = other.checkTyping(moveSet[index].get_type()); 
+
+	//checking for paralazyed movment 
+	int parCheck = rand()%1;
+	if(getStatus() == paralyzed && parCheck == 1)
+		cout << getNickName() << " is paralyzed! It can't move!" << endl;
+
+	//handleing frozen and asleep pokemon
+	else if(getStatus() == asleep || getStatus() == frozen && parCheck == 0)
+		moveHelpAsleepFrozen();
+
+	//if the move hit
+	else if(hit < moveSet[index].get_acc() && parCheck == 0)
+	{
+		//if move type is same as pokemon type the move gains .5 power
+		if(getType() == moveSet[index].get_type())
+		{
+			typeBonus = 1.5;
+		}
+		else
+		{
+			typeBonus = 1;
+		}
+		//gets proper atk and def stats based on atk tag (Physical/special)
+		//if tag is 1 it is special, 0 is physical
+		if(moveSet[index].getSpecial())
+		{
+			attackPow = getSpAtk();
+			defensePow = other.getSpDef();
+		}
+		else
+		{
+			attackPow = getAtk();
+			defensePow = other.getSpDef();
+		}
+
+		//algorithm broken into 3 parts atk based, defense based, random based
+		double atkPart = ((2*getLevel()/5+2)*attackPow*moveSet[index].get_pow()); 
+		double defPart = ((((atkPart/defensePow)/50)+2)*typeBonus)*(typeEffect/10);
+		double randPart = (defPart*random)/255;
+
+		//final damage done
+		int rounded = (int)(round(randPart));
+		if(moveSet[index].get_pow() == 0)
+			rounded = 0;
+
+		//interactive text
+		cout << getNickName() << " used " << moveSet[index].getName();
+		if(typeEffect == 10 || rounded == 0)
+			cout << "." << endl;
+		else if(typeEffect == 20)
+			cout << ", its super effective." << endl;
+		else if(typeEffect == 5)
+			cout << ", its not very effective." << endl;
+		else if(typeEffect == 0)
+			cout << ", it has no effect on foe " << other.getNickName() << "." << endl;
+		else
+			cout << ", and it is a broken move." << endl;
+		
+		//passes on status effect to other pokemon
+		int statusProc = rand()%100;
+		if(statusProc < moveSet[index].get_prob() && moveSet[index].get_status() != normal)
+		{
+			if(other.getStatus() == normal)
+			{
+				status change = moveSet[index].get_status();
+				other.changeStatus(change);
+				cout << other.getNickName() << " is " << other.getStatusText() << endl;
+			}
+			else
+				cout << "it had no effect on foe's status." << endl;
+		}
+		//update other pokemon's hp and moves pp
+		other.reduceHP(rounded);
+		moveSet[index].reduce_pp();
+	}
+	//move missed
+	else	
+		cout << getNickName() << " used " << moveSet[index].getName() << ", it missed." << endl;
+
+
+	//burn and poison damages
+	if(getStatus() == burned)
+		moveHelpBurn();
+	else if(getStatus() == poisoned)
+		moveHelpPoison();	
+}
+
+//USEMOVE HELPER FUNCTIONS FOR STATUS EFFECTS ON POKEMON USING THE MOVE
+void Pokemon::moveHelpBurn()
+{
+	double dmg = getMaxHP()/10;
+	reduceHP((int)(dmg));
+	cout << getNickName() << " was hurt by the burn." << endl;
+}
+//USEMOVE HELPER FUNCTIONS FOR STATUS EFFECTS ON POKEMON USING THE MOVE
+void Pokemon::moveHelpPoison()
+{
+        double dmg = getMaxHP()/10;
+        reduceHP((int)(dmg));
+	cout << getNickName() << " was hurt by the poison." << endl;
+}
+//USEMOVE HELPER FUNCTIONS FOR STATUS EFFECTS ON POKEMON USING THE MOVE
+void Pokemon::moveHelpAsleepFrozen()
+{
+	int check = rand()%1;
+
+	if(check && getStatus() == asleep)
+	{
+		changeStatus(normal);
+		cout << getNickName() << " has woken up." << endl;
+	}
+	else if(check)
+        {
+                changeStatus(normal);
+                cout << getNickName() << " has thawed." << endl;
+        }
+	else if(getStatus() == asleep)
+		cout << getNickName() << " is fast asleep." << endl;
+	else
+		cout << getNickName() << " is frozen solid." << endl;
+}
+
 
 //helps Pokemon constructor that loads from a file
 void Pokemon::typeFromText(string t)
@@ -277,7 +432,7 @@ string Pokemon::getStatusText()
       toRet = "Sleep";
       break;
     case paralyzed:
-      toRet = "Frozen";
+      toRet = "Paralyzed";
       break;
     case frozen:
       toRet = "Frozen";
@@ -362,6 +517,13 @@ void Pokemon::disp()
   cout << "SpA: " << getSpAtk() << "\t" << "SpD: " << getSpDef() << endl;
 }
 
+//limited display for battle sceens
+void Pokemon::battleDisp()
+{
+  cout << getNickName() << " : lvl " << getLevel() << endl;
+  cout <<  "HP: " << getHP() << "/" << getMaxHP() << endl;
+}
+
 //checks typing, 2 = no effect; 1 = super; 0 = normal; -1 = resistant 
 int Pokemon::checkTyping(types t)
 {
@@ -369,156 +531,172 @@ int Pokemon::checkTyping(types t)
   {
     case Normal:
       if(t == Fight)
-        return 1;
+        return 20;
       else if(t == Ghost)
-        return 2;
-      else
         return 0;
+      else
+        return 10;
       break;
 
     case Grass:
       if(t == Fire || t == Ice || t == Poison || t == Flying)
-        return 1;
+        return 20;
       else if(t == Water || t == Eletric || t == Grass || t == Ground)
-        return -1;
+        return 5;
       else
-        return 0;
+        return 10;
       break;
 
     case Water:
       if(t == Eletric || t == Grass)
-        return 1;
+        return 20;
       else if(t == Fire || t == Water || t == Ice)
-        return -1;
+        return 5;
       else
-        return 0;
+        return 10;
       break;
 
     case Fire:
       if(t == Water || t == Ground || t == Rock)
-        return 1;
+        return 20;
       else if(t == Fire || t == Grass || t == Ice || t == Bug)
-        return -1;
+        return 5;
       else
-        return 0;
+        return 10;
       break;
 
     case Flying:
       if(t == Eletric || t == Rock || t == Ice)
-        return 1;
+        return 20;
       else if(t == Fight || t == Grass ||  t == Bug)
-        return -1;
+        return 5;
       else if(t == Ghost)
-        return 2;
-      else
         return 0;
+      else
+        return 10;
       break;
 
     case Fight:
       if(t == Flying || t == Psychic)
-        return 1;
+        return 20;
       else if(t == Rock || t == Dark || t == Bug)
-        return -1;
+        return 5;
       else
-        return 0;
+        return 10;
       break;
 
     case Psychic:
       if(t == Bug || t == Ghost || t == Dark)
-        return 1;
+        return 20;
       else if(t == Psychic || t == Fight)
-        return -1;
+        return 5;
       else
-        return 0;
+        return 10;
       break;
 
     case Bug:
       if(t == Fire || t == Flying || t == Rock)
-        return 1;
+        return 20;
       else if(t == Fight || t == Grass || t == Ground)
-        return -1;
+        return 5;
       else
-        return 0;
+        return 10;
       break;
 
     case Poison:
       if(t == Ground || t == Psychic)
-        return 1;
+        return 20;
       else if(t == Bug || t == Grass || t == Fight || t == Poison)
-        return -1;
+        return 5;
       else
-        return 0;
+        return 10;
       break;
 
     case Eletric:
       if(t == Ground)
-        return 1;
+        return 20;
       else if(t == Eletric || t == Flying)
-        return -1;
+        return 5;
       else
-        return 0;
+        return 10;
       break;
 
     case Rock:
       if(t == Water || t == Ground || t == Fight || t ==  Grass)
-        return 1;
+        return 20;
       else if(t == Normal || t == Fire || t == Poison || t == Flying)
-        return -1;
+        return 5;
       else
-        return 0;
+        return 10;
       break;
 
     case Ground:
       if(t == Water || t == Grass || t == Ice)
-        return 1;
+        return 20;
       else if(t == Rock || t == Poison)
-        return -1;
+        return 5;
       else if(t == Eletric)
-        return 2;
-      else
         return 0;
+      else
+        return 10;
       break;
 
     case Ghost:
       if(t == Ghost || t == Dark)
-        return 1;
+        return 20;
       else if(t == Poison || t == Bug)
-        return -1;
+        return 5;
       else if(t == Normal || t == Fight)
-        return 2;
-      else
         return 0;
+      else
+        return 10;
       break;
 
     case Dark:
       if(t == Fight || t == Bug)
-        return 1;
+        return 20;
       else if(t == Ghost || t == Dark)
-        return -1;
+        return 5;
       else if(t == Psychic)
-        return 2;
-      else
         return 0;
+      else
+        return 10;
       break;
 
     case Ice:
       if(t == Fire || t == Fight || t == Rock)
-        return 1;
+        return 20;
       else if(t == Ice)
-        return -1;
+        return 5;
       else
-        return 0;
+        return 10;
       break;
 
     case Dragon:
       if(t == Ice || t == Dragon)
-        return 1;
+        return 20;
       else if(t == Fire || t == Grass || t == Water || t == Eletric)
-        return -1;
+        return 5;
       else
-        return 0;
+        return 10;
       break;
   }
 }
 
+//displays one move
+void Pokemon::disp_move(int i) {
 
+	cout << i << ": ";
+	moveSet[i].BattleDisplay();
+}
+
+//displays the whole moveset
+void Pokemon::disp_moves()
+{
+	cout << "-------------------" << endl;
+	for(int i = 0; i < 4; i++)
+	{
+		disp_move(i);
+		cout << "-------------------" << endl;
+	}
+}
