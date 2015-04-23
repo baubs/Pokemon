@@ -127,16 +127,16 @@ void Pokemon::useMove(int index, Pokemon &other)
 	double typeEffect = other.checkTyping(moveSet[index].get_type()); 
 
 	//checking for paralazyed movment 
-	int parCheck = rand()%1;
+	int parCheck = rand()%2;
 	if(getStatus() == paralyzed && parCheck == 1)
 		cout << getNickName() << " is paralyzed! It can't move!" << endl;
 
 	//handleing frozen and asleep pokemon
-	else if(getStatus() == asleep || getStatus() == frozen && parCheck == 0)
+	else if(getStatus() == asleep || getStatus() == frozen && parCheck != 1)
 		moveHelpAsleepFrozen();
 
 	//if the move hit
-	else if(hit < moveSet[index].get_acc() && parCheck == 0)
+	else if(hit < moveSet[index].get_acc() && parCheck != 1)
 	{
 		//if move type is same as pokemon type the move gains .5 power
 		if(getType() == moveSet[index].get_type())
@@ -201,9 +201,11 @@ void Pokemon::useMove(int index, Pokemon &other)
 		moveSet[index].reduce_pp();
 	}
 	//move missed
-	else	
+	else
+	{	
 		cout << getNickName() << " used " << moveSet[index].getName() << ", it missed." << endl;
-
+		moveSet[index].reduce_pp();
+	}
 
 	//burn and poison damages
 	if(getStatus() == burned)
@@ -229,9 +231,9 @@ void Pokemon::moveHelpPoison()
 //USEMOVE HELPER FUNCTIONS FOR STATUS EFFECTS ON POKEMON USING THE MOVE
 void Pokemon::moveHelpAsleepFrozen()
 {
-	int check = rand()%1;
+	int check = rand()%2;
 
-	if(check && getStatus() == asleep)
+	if(check == 1 && getStatus() == asleep)
 	{
 		changeStatus(normal);
 		cout << getNickName() << " has woken up." << endl;
@@ -521,7 +523,11 @@ void Pokemon::disp()
 void Pokemon::battleDisp()
 {
   cout << getNickName() << " : lvl " << getLevel() << endl;
-  cout <<  "HP: " << getHP() << "/" << getMaxHP() << endl;
+  cout <<  "HP: " << getHP() << "/" << getMaxHP();
+  if(getStatus() != normal)
+    cout << " " << getStatusText() << endl;
+  else
+    cout << endl;
 }
 
 //checks typing, 2 = no effect; 1 = super; 0 = normal; -1 = resistant 
