@@ -54,7 +54,7 @@ int main() {
 				
 				cout<<"_______________________"<<endl;
 				turn = 2;
-				system("usleep(70000)");
+				sleep(3);
 				break;
 			 case 2:
 				system("clear");
@@ -69,8 +69,8 @@ int main() {
 
 				cout<<"_______________________"<<endl;
                                 turn = 1;
-				system("usleep(70000)");
-                                break;
+                                sleep(3);
+				break;
 
 
 		}

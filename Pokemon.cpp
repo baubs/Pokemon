@@ -123,6 +123,7 @@ void Pokemon::useMove(int index, Pokemon &other)
 	int hit = (rand()%100);      //random number to check if move hit or not
 	status s = moveSet[index].get_status();   //gets status effect of move
 
+
 	//checks typing effectivness against target type
 	double typeEffect = other.checkTyping(moveSet[index].get_type()); 
 
@@ -132,11 +133,11 @@ void Pokemon::useMove(int index, Pokemon &other)
 		cout << getNickName() << " is paralyzed! It can't move!" << endl;
 
 	//handleing frozen and asleep pokemon
-	else if(getStatus() == asleep || getStatus() == frozen && parCheck != 1)
+	else if(getStatus() == asleep || getStatus() == frozen )
 		moveHelpAsleepFrozen();
 
 	//if the move hit
-	else if(hit < moveSet[index].get_acc() && parCheck != 1)
+	else if(hit < moveSet[index].get_acc() )
 	{
 		//if move type is same as pokemon type the move gains .5 power
 		if(getType() == moveSet[index].get_type())
@@ -211,7 +212,13 @@ void Pokemon::useMove(int index, Pokemon &other)
 	if(getStatus() == burned)
 		moveHelpBurn();
 	else if(getStatus() == poisoned)
-		moveHelpPoison();	
+		moveHelpPoison();
+
+	//checks if move KOed other pokemon
+	if(other.getHP() == 0)
+	{
+		cout << other.getNickName() << " fainted." << endl;
+	}	
 }
 
 //USEMOVE HELPER FUNCTIONS FOR STATUS EFFECTS ON POKEMON USING THE MOVE
@@ -220,6 +227,10 @@ void Pokemon::moveHelpBurn()
 	double dmg = getMaxHP()/10;
 	reduceHP((int)(dmg));
 	cout << getNickName() << " was hurt by the burn." << endl;
+	
+	//checks if ainted
+	if(getHP() == 0)
+		cout << getNickName() << " has fainted." << endl;
 }
 //USEMOVE HELPER FUNCTIONS FOR STATUS EFFECTS ON POKEMON USING THE MOVE
 void Pokemon::moveHelpPoison()
@@ -227,6 +238,10 @@ void Pokemon::moveHelpPoison()
         double dmg = getMaxHP()/10;
         reduceHP((int)(dmg));
 	cout << getNickName() << " was hurt by the poison." << endl;
+
+	//cxhecks if fainted
+	if(getHP() == 0)
+                cout << getNickName() << " has fainted." << endl;
 }
 //USEMOVE HELPER FUNCTIONS FOR STATUS EFFECTS ON POKEMON USING THE MOVE
 void Pokemon::moveHelpAsleepFrozen()
