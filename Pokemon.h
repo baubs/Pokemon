@@ -13,7 +13,7 @@ using namespace std;
 //enumeration for current status of the pokemon
 //enum status {normal, burned, poisoned, asleep, paralyzed, frozen, fainted};
 //enumeration for indexes of stat array
-enum stats {HP, maxHP, atk, def, spAtk, spDef, speed};
+//enum stats {HP, maxHP, atk, def, spAtk, spDef, speed};
 
 //enumeration for types of move/pokemon
 //enum types {Normal, Grass, Water, Fire, Flying, Fight, Psychic, Bug, Poison, Eletric, Rock, Ground, Ghost, Dark, Ice, Dragon};
