@@ -15,18 +15,22 @@ int main() {
         cin >> B;
 
 
+
 	Pokemon user1 = Pokemon(A);
 	Pokemon user2 = Pokemon(B);
 
-	user1.LoadMoves(0, 150);
-	user1.LoadMoves(1, 147);
-	user1.LoadMoves(2, 122);
-        user1.LoadMoves(3, 115);
+	user1.LoadMoves(0, 39);
+	user1.LoadMoves(1, 99);
+	user1.LoadMoves(2, 141);
+        user1.LoadMoves(3, 23);
 
-	user2.LoadMoves(0, 119);
-        user2.LoadMoves(1, 23);
-        user2.LoadMoves(2, 65);
+	user2.LoadMoves(0, 77);
+        user2.LoadMoves(1, 99);
+        user2.LoadMoves(2, 105);
         user2.LoadMoves(3, 41);
+	
+
+	user1.disp();
 
 	int turn = 2;
 	int move = 0;
@@ -48,13 +52,12 @@ int main() {
 				user2.battleDisp();
 				user1.disp_moves();
 				cin>>move;
-
-				user1.useMove(move,user2);
 				
+				user1.useMove(move,user2);
 				
 				cout<<"_______________________"<<endl;
 				turn = 2;
-				sleep(3);
+				sleep(5);
 				break;
 			 case 2:
 				system("clear");
@@ -69,7 +72,7 @@ int main() {
 
 				cout<<"_______________________"<<endl;
                                 turn = 1;
-                                sleep(3);
+                                sleep(5);
 				break;
 
 

@@ -16,7 +16,7 @@ using namespace std;
 //non-default constructor
 move::move(int numb) {
 
-	string trash, typeName, statusName;
+	string trash, typeName, statusName, statsName;
         ifstream infile;
         infile.open("moveList.txt");
 
@@ -31,9 +31,11 @@ move::move(int numb) {
                 //using string stream
                 stringstream ss;
                 ss << trash;
-                ss >> number >> mve >> typeName >> pwr >> acc >> pp >> statusName >> prob>>specialTag;
+                ss >> number >> mve >> typeName >> pwr >> acc >> pp >> statusName >> prob >> specialTag;
+		ss >> selfChange >> foeChange >> statsName;
                 typeFromText(typeName);
 		typeFromText_2(statusName);
+		statsFromText(statsName);
 	}
 
 	curr_pp = pp;
@@ -193,6 +195,41 @@ string move::getStatusText()
   return toRet;
 }
 
+string move::getStatText()
+{
+	string toRet;
+
+	switch(change)
+	{
+		case atk:
+			toRet = "atk";
+			break;
+		case def:
+			toRet = "def";
+			break;
+		case spAtk:
+			toRet = "spAtk";
+			break;
+		case spDef:
+			toRet = "spDef";
+			break;
+		case speed:
+			toRet = "speed";
+			break;
+		case HP:
+			toRet = "HP";
+			break;
+		case maxHP:
+			toRet = "maxHP";
+			break;
+		default:
+			toRet = "ERROR";
+			break;
+	}
+
+	return toRet;
+}
+
 //returns type in text
 string move::getTypeText(types t)
 {
@@ -251,6 +288,25 @@ string move::getTypeText(types t)
   return toRet;
 }
 
+void move::statsFromText(string s)
+{
+
+	if(s == "atk") change = atk;
+
+	else if(s == "def") change = def;
+	
+	else if(s == "spAtk") change = spAtk;
+
+	else if(s == "spDef") change = spDef;
+
+	else if(s == "speed") change = speed;
+
+	else if(s == "HP") change = HP;
+
+	else change = maxHP;
+	
+}
+
 void move::typeFromText_2(string t) {
 	
 	if (t == "normal") stat = normal;
@@ -284,4 +340,19 @@ int move::getSpecial() {
 types move::get_type() {
 
 	return type;
+}
+
+int move::getSelfChange()
+{
+	return selfChange;
+}
+
+int move::getFoeChange()
+{
+	return foeChange;
+}
+
+stats move::getChangeStat()
+{
+	return change;
 }

@@ -12,8 +12,6 @@
 
 using namespace std;
 
-//enum status {normal, burned, poisoned, asleep, paralyzed, frozen, fainted};
-//enum types {Normal, Grass, Water, Fire, Flying, Fight, Psychic, Bug, Poison, Eletric, Rock, Ground, Ghost, Dark, Ice, Dragon};
 
 class move {
 
@@ -35,11 +33,16 @@ class move {
 		int reset_pp();	//reset the value of the pp
 		void typeFromText(string);
 		void typeFromText_2(string);
+		void statsFromText(string);
 		string getName();
 		string getStatusText();
-		string getTypeText(types);	
+		string getTypeText(types);
+		string getStatText();	
 		void BattleDisplay();
 		int getSpecial();
+		int getSelfChange();
+		int getFoeChange();
+		stats getChangeStat();		
 	private:
 		int pwr;	//power of the attack
 		int acc;	//accuracy of the attack
@@ -52,7 +55,9 @@ class move {
 		float crit;	//probability of a critical hit
 		string mve;	//the name of the move;
 		int specialTag; //if move is a special this is 1 if not it is 0	
-
+		int selfChange;	//amount the move modifies own stats
+		int foeChange;  //amount the move effects foe's stats
+		stats change;	//stat modified
 
 };
 

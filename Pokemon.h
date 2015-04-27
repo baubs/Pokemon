@@ -10,13 +10,6 @@
 #include "move.h"
 using namespace std;
 
-//enumeration for current status of the pokemon
-//enum status {normal, burned, poisoned, asleep, paralyzed, frozen, fainted};
-//enumeration for indexes of stat array
-//enum stats {HP, maxHP, atk, def, spAtk, spDef, speed};
-
-//enumeration for types of move/pokemon
-//enum types {Normal, Grass, Water, Fire, Flying, Fight, Psychic, Bug, Poison, Eletric, Rock, Ground, Ghost, Dark, Ice, Dragon};
 
 class Pokemon
 {
@@ -30,8 +23,10 @@ class Pokemon
     void gainexp(int);			//give pokemon specified exp and levels up if needed 
     void changeStatus(status);		//changes the status of the pokemon
     void reduceHP(int);			//used in useMove to update health
+    void gainHP(int);			//used in useMove to deal with special case moves
     status getStatus();			//returns enum "current status"
     types getType();			//returns enum "type"
+    void resetTemp();			//returns temp stats to base stats after battle ends
     int getLevel();			
     int getExp();
     int getMaxExp();
@@ -54,9 +49,10 @@ class Pokemon
     void disp_moves();     		//displays whole move set
     void LoadMoves(int, int);    	//loads move from moveList file to movelist member using index
     void useMove(int, Pokemon &);   	//uses move index on pokemon
-    void moveHelpBurn();            	//HELPER FUNCTIONS HANDLING STATUSES IN USEMOVE
-    void moveHelpPoison();		//^
+    void moveHelpBurn(Pokemon &);            	//HELPER FUNCTIONS HANDLING STATUSES IN USEMOVE
+    void moveHelpPoison(Pokemon &);		//^
     void moveHelpAsleepFrozen();	//^^
+    void statsChange(int, int, Pokemon &);			//^^^ but with stats
   private:
     int number;
     string name;
@@ -65,7 +61,8 @@ class Pokemon
     int level;
     int exp;  
     int nxtLev;  //exp needed to gain level
-    int stats[7];
+    int baseStats[7];
+    int tempStats[7];
     int mults[7]; //multipliers for each stat
     status effect;
     move *moveSet;  
