@@ -20,7 +20,7 @@ class Pokemon
     Pokemon(int); 			//loads Pokemon from Pokelist using the number (1-150)
     void typeFromText(string);  	//sets the type based on string
     void levelup();			//promotes pokemon to next level
-    void gainexp(int);			//give pokemon specified exp and levels up if needed 
+    void gainexp(unsigned long int);			//give pokemon specified exp and levels up if needed 
     void changeStatus(status);		//changes the status of the pokemon
     void reduceHP(int);			//used in useMove to update health
     void gainHP(int);			//used in useMove to deal with special case moves
@@ -53,13 +53,15 @@ class Pokemon
     void moveHelpPoison(Pokemon &);		//^
     void moveHelpAsleepFrozen();	//^^
     void statsChange(int, int, Pokemon &);			//^^^ but with stats
+    unsigned long int giveXP();
+    void savePokemon();			//saves pokemon to saveFile.txt
   private:
     int number;
     string name;
     string nickname;
     types type;
     int level;
-    int exp;  
+    unsigned long int exp;  
     int nxtLev;  //exp needed to gain level
     int baseStats[7];
     int tempStats[7];

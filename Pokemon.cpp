@@ -96,7 +96,7 @@ Pokemon::Pokemon(int num)
     ss << trash;
     ss >> number >> name >> typeName >> baseStats[HP] >> baseStats[atk] >> baseStats[def];
     ss >> baseStats[spAtk] >> baseStats[spDef] >> baseStats[speed];
-    ss >> mults[HP] >> mults[atk] >> mults[def] >> mults[spAtk] >> mults[spDef] >> mults[speed]; 
+    ss >> mults[maxHP] >> mults[atk] >> mults[def] >> mults[spAtk] >> mults[spDef] >> mults[speed]; 
 
   }
   nickname = name;
@@ -165,6 +165,7 @@ void Pokemon::useMove(int index, Pokemon &other)
 		else
 		{
 			attackPow = getAtk();
+			cout << "Attack Power: " << attackPow << " Base Attack Power: " << baseStats[atk] << endl;
 			defensePow = other.getSpDef();
 		}
 
@@ -596,7 +597,7 @@ void Pokemon::resetTemp()
 }
 
 //giving a pokmon exp
-void Pokemon:: gainexp(int xp)
+void Pokemon:: gainexp(unsigned long int xp)
 {
   //if pokemon gains more exp than it needs to 
   if(exp + xp >= nxtLev)
@@ -611,7 +612,10 @@ void Pokemon:: gainexp(int xp)
 
 void Pokemon::gainHP(int h)
 {
-	baseStats[HP] += h;
+	if(baseStats[HP] + h > baseStats[maxHP])
+		baseStats[HP] = baseStats[maxHP];
+	else
+		baseStats[HP] += h;
 }
 
 //change status of pokemon
@@ -999,4 +1003,19 @@ void Pokemon::disp_moves()
 		disp_move(i);
 		cout << "-------------------" << endl;
 	}
+}
+
+//determines amount of xp to award killer
+unsigned long int Pokemon::giveXP()
+{
+	return (15*level*level)+(50*level)+50;
+}
+
+//saves pokemon to filename
+void Pokemon::savePokemon()
+{
+	ofstream myfile;
+	myfile.open("savefile.txt");
+	myfile << getName() << "\t" << getTypeText(getType()) << "\t" << getMaxHP() << "\t" << getAtk() << endl;
+	myfile.close();
 }

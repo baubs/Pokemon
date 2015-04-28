@@ -58,6 +58,7 @@ int main() {
 				cout<<"_______________________"<<endl;
 				turn = 2;
 				sleep(5);
+				user1.gainexp(user1.giveXP());
 				break;
 			 case 2:
 				system("clear");
@@ -77,6 +78,7 @@ int main() {
 
 
 		}
-	}	
+	}
+	user1.savePokemon();	
 
 }
