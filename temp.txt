@@ -1,0 +1,251 @@
+string Pokemon::statsChange(int index, int damageDone, Pokemon &other)
+{
+        //for HP stat
+	string toRet;
+        switch( moveSet[index].getChangeStat() )
+        {
+                int self, foe;
+
+                case HP:
+                        if( moveSet[index].getSelfChange() == 5 )
+                        {
+                                gainHP(damageDone/2);
+                                toRet += getNickName() + " absorbed health." + endl;
+                        }
+                        else if( moveSet[index].getSelfChange() < 0 )
+                        {
+                                gainHP(moveSet[index].getSelfChange());
+                                toRet += getNickName() + " was hit by recoil." + endl;
+                                if(getHP() == 0)
+                                        toRet += getNickName() + " has fainted." + endl;
+                        }
+                        else if( moveSet[index].getSelfChange() > 0)
+                        {
+                                gainHP(moveSet[index].getSelfChange());
+                                toRet += getNickName() + " recovered health." + endl;
+                        }
+                        other.gainHP(moveSet[index].getFoeChange());
+                        break;
+                case speed:
+                        self = moveSet[index].getSelfChange();
+                        if( self > 0 && tempStats[speed] - baseStats[speed] < 60)
+                        {
+                                tempStats[speed] += self;
+                                toRet += getNickName() + "'s speed rose." + endl;
+                        }
+                        else if(self > 0)
+                        {
+                                toRet += getNickName() + "'s speed won't go higher." + endl;
+                        }
+                        else if( self < 0 && tempStats[speed] + self >= 5)
+                        {
+                                tempStats[speed] += self;
+                                toRet += getNickName() + "'s speed fell." + endl;
+                        }
+                        else if( self < 0 )
+                        {
+                                toRet += getNickName() + "'s speed won't go lower." + endl;
+                        }
+
+                        foe = moveSet[index].getFoeChange();
+                        if( foe > 0 && other.tempStats[speed] - other.baseStats[speed] < 60)
+                        {
+                                other.tempStats[speed] += foe;
+                                toRet += other.getNickName() + "'s speed rose." + endl;
+                        }
+                        else if(foe > 0)
+                        {
+                                toRet += other.getNickName() + "'s speed won't go higher." + endl;
+                        }
+                        else if( foe < 0 && other.tempStats[speed] + foe >= 5)
+                        {
+                                other.tempStats[speed] += foe;
+                                toRet += other.getNickName() + "'s speed fell." + endl;
+ }
+                        else if( foe < 0 )
+                        {
+                                toRet += other.getNickName() + "'s speed won't go lower." + endl;
+                        }
+                        break;
+
+                case atk:
+                        self = moveSet[index].getSelfChange();
+                        if( self > 0 && tempStats[atk] - baseStats[atk] < 60)
+                        {
+                                tempStats[atk] += self;
+                                toRet += getNickName() + "'s atk rose." + endl;
+                        }
+                        else if(self > 0)
+                        {
+                                tempStats[atk] = baseStats[atk] + 60;
+                                toRet += getNickName() + "'s atk won't go higher." + endl;
+                        }
+                        else if( self < 0 && tempStats[atk] + self >= 5)
+                        {
+                                tempStats[atk] += self;
+                                toRet += getNickName() + "'s atk fell." + endl;
+                        }
+                        else if( self < 0 )
+                        {
+                                toRet += getNickName() + "'s atk won't go lower." + endl;
+                        }
+
+                        foe = moveSet[index].getFoeChange();
+                        if( foe > 0 && other.tempStats[atk] - other.baseStats[atk] < 60)
+                        {
+                                other.tempStats[atk] += foe;
+                                toRet += other.getNickName() + "'s atk rose." + endl;
+                        }
+                        else if(foe > 0)
+                        {
+                                other.tempStats[atk] = other.baseStats[atk] + 60;
+                                toRet += other.getNickName() + "'s atk won't go higher." + endl;
+                        }
+                        else if( foe < 0 && other.tempStats[atk] + foe >= 5)
+                        {
+                                other.tempStats[atk] += foe;
+                                toRet += other.getNickName() + "'s atk fell." + endl;
+                        }
+                        else if( foe < 0 )
+                        {
+                                toRet += other.getNickName() + "'s atk won't go lower." + endl;
+                        }
+                        break;
+
+                case def:
+                        self = moveSet[index].getSelfChange();
+                        if( self > 0 && tempStats[def] - baseStats[def] < 60)
+                        {
+                                tempStats[def] += self;
+                                toRet += getNickName() + "'s def rose." + endl;
+                        }
+                        else if(self > 0)
+                        {
+                                tempStats[def] = baseStats[def] + 60;
+                                toRet += getNickName() + "'s def won't go higher." + endl;
+                        }
+ else if( self < 0 && tempStats[def] + self >= 5 && baseStats[def] - tempStats[def] < 60)
+                        {
+                                tempStats[def] += self;
+                                toRet += getNickName() + "'s def fell." + endl;
+                        }
+                        else if( self < 0 )
+                        {
+                                toRet += getNickName() + "'s def won't go lower." + endl;
+                        }
+
+                        foe = moveSet[index].getFoeChange();
+                        if( foe > 0 && other.tempStats[def] - other.baseStats[def] < 60)
+                        {
+                                other.tempStats[def] += foe;
+                                toRet += other.getNickName() + "'s def rose." + endl;
+                        }
+                        else if(foe > 0)
+                        {
+                                other.tempStats[def] = other.baseStats[def] + 60;
+                                toRet += other.getNickName() + "'s def won't go higher." + endl;
+                        }
+                        else if(foe<0&&other.tempStats[def]+foe>=5&&other.baseStats[def]-other.tempStats[def]<60)
+                        {
+                                other.tempStats[def] += foe;
+                                toRet += other.getNickName() + "'s def fell." + endl;
+                        }
+                        else if( foe < 0 )
+                        {
+                                toRet += other.getNickName() + "'s def won't go lower." + endl;
+                        }
+                        break;
+
+                case spDef:
+                        self = moveSet[index].getSelfChange();
+                        if( self > 0 && tempStats[spDef] - baseStats[spDef] < 60)
+                        {
+                                tempStats[spDef] += self;
+                                toRet += getNickName() + "'s spDef rose." + endl;
+                        }
+                        else if(self > 0)
+                        {
+                                tempStats[spDef] = baseStats[spDef] + 60;
+                                toRet += getNickName() + "'s spDef won't go higher." + endl;
+                        }
+                        else if( self < 0 && tempStats[spDef] + self >= 5 && baseStats[spDef] - tempStats[spDef] < 60)
+                        {
+                                tempStats[spDef] += self;
+                                toRet += getNickName() + "'s spDef fell." + endl;
+                        }
+                        else if( self < 0 )
+                        {
+                                toRet += getNickName() + "'s spDef won't go lower." + endl;
+                        }
+
+                        foe = moveSet[index].getFoeChange();
+                        if( foe > 0 && other.tempStats[spDef] - other.baseStats[spDef] < 60)
+                        {
+                                other.tempStats[spDef] += foe;
+                                toRet += other.getNickName() + "'s dspDf rose." + endl;
+                        }
+                        else if(foe > 0)
+                        {
+				other.tempStats[spDef] = other.baseStats[spDef] + 60;
+                                toRet += other.getNickName() + "'s spDef won't go higher." + endl;
+                        }
+                        else if(foe<0&&other.tempStats[spDef]+foe>=5&&other.baseStats[spDef]-other.tempStats[spDef]<60)
+                        {
+                                other.tempStats[spDef] += foe;
+                                toRet += other.getNickName() + "'s spDef fell." + endl;
+                        }
+                        else if( foe < 0 )
+                        {
+                                toRet += other.getNickName() + "'s spDef won't go lower." + endl;
+                        }
+                        break;
+
+                case spAtk:
+                        self = moveSet[index].getSelfChange();
+                        if( self > 0 && tempStats[spAtk] - baseStats[spAtk] < 60)
+                        {
+                                tempStats[spAtk] += self;
+                                toRet += getNickName() + "'s spAtk rose." + endl;
+                        }
+                        else if(self > 0)
+                        {
+                                tempStats[spAtk] = baseStats[spAtk] + 60;
+                                toRet += getNickName() + "'s spAtk won't go higher." + endl;
+                        }
+                        else if( self < 0 && tempStats[spAtk] + self >= 5 && baseStats[spAtk] - tempStats[spAtk] < 60)
+                        {
+                                tempStats[spAtk] += self;
+                                toRet += getNickName() + "'s spAtk fell." + endl;
+                        }
+                        else if( self < 0 )
+                        {
+                                toRet += getNickName() + "'s spAtk won't go lower." + endl;
+                        }
+
+                        foe = moveSet[index].getFoeChange();
+                        if( foe > 0 && other.tempStats[spAtk] - other.baseStats[spAtk] < 60)
+                        {
+                                other.tempStats[spAtk] += foe;
+                                toRet += other.getNickName() + "'s spAtk rose." + endl;
+                        }
+                        else if(foe > 0)
+                        {
+                                other.tempStats[spAtk] = other.baseStats[spAtk] + 60;
+                                toRet += other.getNickName() + "'s spAtk won't go higher." + endl;
+                        }
+                        else if(foe<0&&other.tempStats[spAtk]+foe>=5&&other.baseStats[spAtk]-other.tempStats[spAtk]<60)
+                        {
+                                other.tempStats[spAtk] += foe;
+                                toRet += other.getNickName() + "'s spAtk fell." + endl;
+                        }
+                        else if( foe < 0 )
+                        {
+                                toRet += other.getNickName() + "'s spAtk won't go lower." + endl;
+                        }
+                        break;
+        }
+
+	return toRet;
+
+}
+
