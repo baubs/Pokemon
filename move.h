@@ -38,7 +38,7 @@ class move {
 		string getStatusText();
 		string getTypeText(types);
 		string getStatText();	
-		void BattleDisplay();
+		string BattleDisplay();
 		int getSpecial();
 		int getSelfChange();
 		int getFoeChange();

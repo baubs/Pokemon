@@ -1,7 +1,7 @@
 all:	moveTest
 
 moveTest: moveTest.o Pokemon.o move.o
-	g++ moveTest.o Pokemon.o move.o -o moveTest
+	g++ moveTest.o Pokemon.o move.o -lSDL_image -lSDL_ttf -o moveTest
 
 moveTest.o: moveTest.cpp
 	g++ -c moveTest.cpp

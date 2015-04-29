@@ -2,6 +2,7 @@
 //Base class for all Pokemon
 //03/25/2015
 
+#include <vector>
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -121,8 +122,9 @@ void Pokemon::LoadMoves(int index, int moveNumber) {
 
 
 //algorithm  for using move on a pokemon
-void Pokemon::useMove(int index, Pokemon &other)
+string Pokemon::useMove(int index, Pokemon &other)
 {
+    string str1;
 	int attackPow;     //atk stat
 	int defensePow;    //def stat
 	double typeBonus;  //1.5 or 1
@@ -137,11 +139,11 @@ void Pokemon::useMove(int index, Pokemon &other)
 	//checking for paralazyed movment 
 	int parCheck = rand()%2;
 	if(getStatus() == paralyzed && parCheck == 1)
-		cout << getNickName() << " is paralyzed! It can't move!" << endl;
+		str1 += getNickName() + " is paralyzed! It can't move!";
 
 	//handleing frozen and asleep pokemon
 	else if(getStatus() == asleep || getStatus() == frozen )
-		moveHelpAsleepFrozen();
+		str1 += moveHelpAsleepFrozen();
 
 	//if the move hit
 	else if(hit < moveSet[index].get_acc() )
@@ -165,7 +167,6 @@ void Pokemon::useMove(int index, Pokemon &other)
 		else
 		{
 			attackPow = getAtk();
-			cout << "Attack Power: " << attackPow << " Base Attack Power: " << baseStats[atk] << endl;
 			defensePow = other.getSpDef();
 		}
 
@@ -180,17 +181,17 @@ void Pokemon::useMove(int index, Pokemon &other)
 			rounded = 0;
 
 		//interactive text
-		cout << getNickName() << " used " << moveSet[index].getName();
+		str1 += " " + getNickName() + " used " + moveSet[index].getName();
 		if(typeEffect == 10 || rounded == 0)
-			cout << "." << endl;
+			str1 += ".";
 		else if(typeEffect == 20)
-			cout << ", its super effective." << endl;
+			str1 += ", its super effective.";
 		else if(typeEffect == 5)
-			cout << ", its not very effective." << endl;
+            str1 += ", its not very effective.";
 		else if(typeEffect == 0)
-			cout << ", it has no effect on foe " << other.getNickName() << "." << endl;
+			str1 += ", it has no effect on foe " + other.getNickName() + ".";
 		else
-			cout << ", and it is a broken move." << endl;
+			str1 += ", and it is a broken move.";
 		
 		//passes on status effect to other pokemon
 		int statusProc = rand()%100;
@@ -200,334 +201,352 @@ void Pokemon::useMove(int index, Pokemon &other)
 			{
 				status change = moveSet[index].get_status();
 				other.changeStatus(change);
-				cout << other.getNickName() << " is " << other.getStatusText() << endl;
+				str1 += " " + other.getNickName() + " is " + other.getStatusText();
 			}
 			else
-				cout << "it had no effect on foe's status." << endl;
+				str1 += "it had no effect on foe's status.";
 		}
 		//update other pokemon's hp and moves pp
 		other.reduceHP(rounded);
 		moveSet[index].reduce_pp();
-		statsChange(index, rounded,  other);
+		str1 += " " + statsChange(index, rounded,  other);
 	}
 	//move missed
 	else
 	{	
-		cout << getNickName() << " used " << moveSet[index].getName() << ", it missed." << endl;
+		str1 += " " + getNickName() + " used " + moveSet[index].getName() + ", it missed.";
 		moveSet[index].reduce_pp();
 	}
 
 	//burn and poison damages
 	if(getStatus() == burned)
-		moveHelpBurn(other);
+		str1 += " " + moveHelpBurn(other);
 	else if(getStatus() == poisoned)
-		moveHelpPoison(other);
+		str1 += " " + moveHelpPoison(other);
 
 	//checks if move KOed other pokemon
 	if(other.getHP() == 0)
 	{
-		cout << other.getNickName() << " fainted." << endl;
+		string xp;
+		stringstream convertxp;
+		
+		str1 += " " + other.getNickName() + " fainted.";
 		other.resetTemp();
 		resetTemp();
-	}	
-}
-
-//deals with status changes in use moves
-void Pokemon::statsChange(int index, int damageDone, Pokemon &other)
-{
-	//for HP stat
-	switch( moveSet[index].getChangeStat() )
-	{
-		int self, foe;
-
-		case HP:
-			if( moveSet[index].getSelfChange() == 5 )
-			{
-				gainHP(damageDone/2);
-				cout << getNickName() << " absorbed health." << endl;
-			}
-			else if( moveSet[index].getSelfChange() < 0 )
-			{
-				gainHP(moveSet[index].getSelfChange());
-				cout << getNickName() << " was hit by recoil." << endl;
-				if(getHP() == 0)
-					cout << getNickName() << " has fainted." << endl;
-			}
-			else if( moveSet[index].getSelfChange() > 0)
-			{
-                        	gainHP(moveSet[index].getSelfChange());
-                        	cout << getNickName() << " recovered health." << endl;
-			}
-			other.gainHP(moveSet[index].getFoeChange());
-			break;
-		case speed:
-			self = moveSet[index].getSelfChange(); 
-			if( self > 0 && tempStats[speed] - baseStats[speed] < 60)
-			{
-				tempStats[speed] += self;
-				cout << getNickName() << "'s speed rose." << endl;
-			}
-			else if(self > 0)
-			{
-				cout << getNickName() << "'s speed won't go higher." << endl;
-			}
-			else if( self < 0 && tempStats[speed] + self >= 5)
-			{
-				tempStats[speed] += self;
-				cout << getNickName() << "'s speed fell." << endl;
-			}
-			else if( self < 0 )
-			{
-				cout << getNickName() << "'s speed won't go lower." << endl;
-			}
-
-			foe = moveSet[index].getFoeChange();
-                        if( foe > 0 && other.tempStats[speed] - other.baseStats[speed] < 60)
-                        {
-                                other.tempStats[speed] += foe;
-                                cout << other.getNickName() << "'s speed rose." << endl;
-                        }
-                        else if(foe > 0)
-                        {
-                                cout << other.getNickName() << "'s speed won't go higher." << endl;
-                        }
-                        else if( foe < 0 && other.tempStats[speed] + foe >= 5)
-                        {
-                                other.tempStats[speed] += foe;
-                                cout << other.getNickName() << "'s speed fell." << endl;
-                        }
-                        else if( foe < 0 )
-                        {
-                                cout << other.getNickName() << "'s speed won't go lower." << endl;
-                        }
-			break;
-
-		case atk:
-			self = moveSet[index].getSelfChange();
-                        if( self > 0 && tempStats[atk] - baseStats[atk] < 60)
-                        {
-                                tempStats[atk] += self;
-                                cout << getNickName() << "'s atk rose." << endl;
-                        }
-                        else if(self > 0)
-                        {
-				tempStats[atk] = baseStats[atk] + 60;
-                                cout << getNickName() << "'s atk won't go higher." << endl;
-                        }
-                        else if( self < 0 && tempStats[atk] + self >= 5)
-                        {
-                                tempStats[atk] += self;
-                                cout << getNickName() << "'s atk fell." << endl;
-                        }
-                        else if( self < 0 )
-                        {
-                                cout << getNickName() << "'s atk won't go lower." << endl;
-                        }
-
-                        foe = moveSet[index].getFoeChange();
-                        if( foe > 0 && other.tempStats[atk] - other.baseStats[atk] < 60)
-                        {
-                                other.tempStats[atk] += foe;
-                                cout << other.getNickName() << "'s atk rose." << endl;
-                        }
-                        else if(foe > 0)
-                        {
-				other.tempStats[atk] = other.baseStats[atk] + 60;
-                                cout << other.getNickName() << "'s atk won't go higher." << endl;
-                        }
-                        else if( foe < 0 && other.tempStats[atk] + foe >= 5)
-                        {
-                                other.tempStats[atk] += foe;
-                                cout << other.getNickName() << "'s atk fell." << endl;
-                        }
-                        else if( foe < 0 )
-                        {
-                                cout << other.getNickName() << "'s atk won't go lower." << endl;
-                        }
-                        break;
-
-		case def:
-			self = moveSet[index].getSelfChange();
-                        if( self > 0 && tempStats[def] - baseStats[def] < 60)
-                        {
-                                tempStats[def] += self;
-                                cout << getNickName() << "'s def rose." << endl;
-                        }
-                        else if(self > 0)
-                        {
-				tempStats[def] = baseStats[def] + 60;
-                                cout << getNickName() << "'s def won't go higher." << endl;
-                        }
-                        else if( self < 0 && tempStats[def] + self >= 5 && baseStats[def] - tempStats[def] < 60)
-                        {
-                                tempStats[def] += self;
-                                cout << getNickName() << "'s def fell." << endl;
-                        }
-                        else if( self < 0 )
-                        {
-                                cout << getNickName() << "'s def won't go lower." << endl;
-                        }
-
-                        foe = moveSet[index].getFoeChange();
-                        if( foe > 0 && other.tempStats[def] - other.baseStats[def] < 60)
-                        {
-                                other.tempStats[def] += foe;
-                                cout << other.getNickName() << "'s def rose." << endl;
-                        }
-                        else if(foe > 0)
-                        {
-				other.tempStats[def] = other.baseStats[def] + 60;
-                                cout << other.getNickName() << "'s def won't go higher." << endl;
-                        }
-                        else if(foe<0&&other.tempStats[def]+foe>=5&&other.baseStats[def]-other.tempStats[def]<60)
-                        {
-                                other.tempStats[def] += foe;
-                                cout << other.getNickName() << "'s def fell." << endl;
-                        }
-                        else if( foe < 0 )
-                        {
-                                cout << other.getNickName() << "'s def won't go lower." << endl;
-                        }
-                        break;
-
-		case spDef:
-			self = moveSet[index].getSelfChange();
-                        if( self > 0 && tempStats[spDef] - baseStats[spDef] < 60)
-                        {
-                                tempStats[spDef] += self;
-                                cout << getNickName() << "'s spDef rose." << endl;
-                        }
-                        else if(self > 0)
-                        {
-                                tempStats[spDef] = baseStats[spDef] + 60;
-                                cout << getNickName() << "'s spDef won't go higher." << endl;
-                        }
-                        else if( self < 0 && tempStats[spDef] + self >= 5 && baseStats[spDef] - tempStats[spDef] < 60)
-                        {
-                                tempStats[spDef] += self;
-                                cout << getNickName() << "'s spDef fell." << endl;
-                        }
-                        else if( self < 0 )
-                        {
-                                cout << getNickName() << "'s spDef won't go lower." << endl;
-                        }
-
-                        foe = moveSet[index].getFoeChange();
-                        if( foe > 0 && other.tempStats[spDef] - other.baseStats[spDef] < 60)
-                        {
-                                other.tempStats[spDef] += foe;
-                                cout << other.getNickName() << "'s dspDf rose." << endl;
-                        }
-                        else if(foe > 0)
-                        {
-                                other.tempStats[spDef] = other.baseStats[spDef] + 60;
-                                cout << other.getNickName() << "'s spDef won't go higher." << endl;
-                        }
-                        else if(foe<0&&other.tempStats[spDef]+foe>=5&&other.baseStats[spDef]-other.tempStats[spDef]<60)
-                        {
-                                other.tempStats[spDef] += foe;
-                                cout << other.getNickName() << "'s spDef fell." << endl;
-                        }
-                        else if( foe < 0 )
-                        {
-                                cout << other.getNickName() << "'s spDef won't go lower." << endl;
-                        }
-                        break;
-
-		case spAtk:
-			self = moveSet[index].getSelfChange();
-                        if( self > 0 && tempStats[spAtk] - baseStats[spAtk] < 60)
-                        {
-                                tempStats[spAtk] += self;
-                                cout << getNickName() << "'s spAtk rose." << endl;
-                        }
-                        else if(self > 0)
-                        {
-                                tempStats[spAtk] = baseStats[spAtk] + 60;
-                                cout << getNickName() << "'s spAtk won't go higher." << endl;
-                        }
-                        else if( self < 0 && tempStats[spAtk] + self >= 5 && baseStats[spAtk] - tempStats[spAtk] < 60)
-                        {
-                                tempStats[spAtk] += self;
-                                cout << getNickName() << "'s spAtk fell." << endl;
-                        }
-                        else if( self < 0 )
-                        {
-                                cout << getNickName() << "'s spAtk won't go lower." << endl;
-                        }
-
-                        foe = moveSet[index].getFoeChange();
-                        if( foe > 0 && other.tempStats[spAtk] - other.baseStats[spAtk] < 60)
-                        {
-                                other.tempStats[spAtk] += foe;
-                                cout << other.getNickName() << "'s spAtk rose." << endl;
-                        }
-                        else if(foe > 0)
-                        {
-                                other.tempStats[spAtk] = other.baseStats[spAtk] + 60;
-                                cout << other.getNickName() << "'s spAtk won't go higher." << endl;
-                        }
-                        else if(foe<0&&other.tempStats[spAtk]+foe>=5&&other.baseStats[spAtk]-other.tempStats[spAtk]<60)
-                        {
-                                other.tempStats[spAtk] += foe;
-                                cout << other.getNickName() << "'s spAtk fell." << endl;
-                        }
-                        else if( foe < 0 )
-                        {
-                                cout << other.getNickName() << "'s spAtk won't go lower." << endl;
-                        }
-                        break;
+		gainexp(other.giveXP());
+		convertxp << other.giveXP();
+		convertxp >> xp;
+		str1 += getNickName() + " gained " + xp + " exp. "; 
 	}
-
+    return str1;
 }
+
+string Pokemon::statsChange(int index, int damageDone, Pokemon &other)
+{
+    //for HP stat
+    string toRet;
+    switch( moveSet[index].getChangeStat() )
+    {
+            int self, foe;
+            
+        case HP:
+            if( moveSet[index].getSelfChange() == 5 )
+            {
+                gainHP(damageDone/2);
+                toRet += getNickName() + " absorbed health.";
+            }
+            else if( moveSet[index].getSelfChange() < 0 )
+            {
+                gainHP(moveSet[index].getSelfChange());
+                toRet += getNickName() + " was hit by recoil.";
+                if(getHP() == 0)
+                    toRet += getNickName() + " has fainted.";
+            }
+            else if( moveSet[index].getSelfChange() > 0)
+            {
+                gainHP(moveSet[index].getSelfChange());
+                toRet += getNickName() + " recovered health.";
+            }
+            other.gainHP(moveSet[index].getFoeChange());
+            break;
+        case speed:
+            self = moveSet[index].getSelfChange();
+            if( self > 0 && tempStats[speed] - baseStats[speed] < 60)
+            {
+                tempStats[speed] += self;
+                toRet += getNickName() + "'s speed rose.";
+            }
+            else if(self > 0)
+            {
+                toRet += getNickName() + "'s speed won't go higher.";
+            }
+            else if( self < 0 && tempStats[speed] + self >= 5)
+            {
+                tempStats[speed] += self;
+                toRet += getNickName() + "'s speed fell.";
+            }
+            else if( self < 0 )
+            {
+                toRet += getNickName() + "'s speed won't go lower.";
+            }
+            
+            foe = moveSet[index].getFoeChange();
+            if( foe > 0 && other.tempStats[speed] - other.baseStats[speed] < 60)
+            {
+                other.tempStats[speed] += foe;
+                toRet += other.getNickName() + "'s speed rose.";
+            }
+            else if(foe > 0)
+            {
+                toRet += other.getNickName() + "'s speed won't go higher.";
+            }
+            else if( foe < 0 && other.tempStats[speed] + foe >= 5)
+            {
+                other.tempStats[speed] += foe;
+                toRet += other.getNickName() + "'s speed fell.";
+            }
+            else if( foe < 0 )
+            {
+                toRet += other.getNickName() + "'s speed won't go lower.";
+            }
+            break;
+            
+        case atk:
+            self = moveSet[index].getSelfChange();
+            if( self > 0 && tempStats[atk] - baseStats[atk] < 60)
+            {
+                tempStats[atk] += self;
+                toRet += getNickName() + "'s atk rose.";
+            }
+            else if(self > 0)
+            {
+                tempStats[atk] = baseStats[atk] + 60;
+                toRet += getNickName() + "'s atk won't go higher.";
+            }
+            else if( self < 0 && tempStats[atk] + self >= 5)
+            {
+                tempStats[atk] += self;
+                toRet += getNickName() + "'s atk fell.";
+            }
+            else if( self < 0 )
+            {
+                toRet += getNickName() + "'s atk won't go lower.";
+            }
+            
+            foe = moveSet[index].getFoeChange();
+            if( foe > 0 && other.tempStats[atk] - other.baseStats[atk] < 60)
+            {
+                other.tempStats[atk] += foe;
+                toRet += other.getNickName() + "'s atk rose.";
+            }
+            else if(foe > 0)
+            {
+                other.tempStats[atk] = other.baseStats[atk] + 60;
+                toRet += other.getNickName() + "'s atk won't go higher.";
+            }
+            else if( foe < 0 && other.tempStats[atk] + foe >= 5)
+            {
+                other.tempStats[atk] += foe;
+                toRet += other.getNickName() + "'s atk fell.";
+            }
+            else if( foe < 0 )
+            {
+                toRet += other.getNickName() + "'s atk won't go lower.";
+            }
+            break;
+            
+        case def:
+            self = moveSet[index].getSelfChange();
+            if( self > 0 && tempStats[def] - baseStats[def] < 60)
+            {
+                tempStats[def] += self;
+                toRet += getNickName() + "'s def rose.";
+            }
+            else if(self > 0)
+            {
+                tempStats[def] = baseStats[def] + 60;
+                toRet += getNickName() + "'s def won't go higher.";
+            }
+            else if( self < 0 && tempStats[def] + self >= 5 && baseStats[def] - tempStats[def] < 60)
+            {
+                tempStats[def] += self;
+                toRet += getNickName() + "'s def fell.";
+            }
+            else if( self < 0 )
+            {
+                toRet += getNickName() + "'s def won't go lower.";
+            }
+            
+            foe = moveSet[index].getFoeChange();
+            if( foe > 0 && other.tempStats[def] - other.baseStats[def] < 60)
+            {
+                other.tempStats[def] += foe;
+                toRet += other.getNickName() + "'s def rose.";
+            }
+            else if(foe > 0)
+            {
+                other.tempStats[def] = other.baseStats[def] + 60;
+                toRet += other.getNickName() + "'s def won't go higher.";
+            }
+            else if(foe<0&&other.tempStats[def]+foe>=5&&other.baseStats[def]-other.tempStats[def]<60)
+            {
+                other.tempStats[def] += foe;
+                toRet += other.getNickName() + "'s def fell.";
+            }
+            else if( foe < 0 )
+            {
+                toRet += other.getNickName() + "'s def won't go lower.";
+            }
+            break;
+            
+        case spDef:
+            self = moveSet[index].getSelfChange();
+            if( self > 0 && tempStats[spDef] - baseStats[spDef] < 60)
+            {
+                tempStats[spDef] += self;
+                toRet += getNickName() + "'s spDef rose.";
+            }
+            else if(self > 0)
+            {
+                tempStats[spDef] = baseStats[spDef] + 60;
+                toRet += getNickName() + "'s spDef won't go higher.";
+            }
+            else if( self < 0 && tempStats[spDef] + self >= 5 && baseStats[spDef] - tempStats[spDef] < 60)
+            {
+                tempStats[spDef] += self;
+                toRet += getNickName() + "'s spDef fell.";
+            }
+            else if( self < 0 )
+            {
+                toRet += getNickName() + "'s spDef won't go lower.";
+            }
+            
+            foe = moveSet[index].getFoeChange();
+            if( foe > 0 && other.tempStats[spDef] - other.baseStats[spDef] < 60)
+            {
+                other.tempStats[spDef] += foe;
+                toRet += other.getNickName() + "'s dspDf rose.";
+            }
+            else if(foe > 0)
+            {
+                other.tempStats[spDef] = other.baseStats[spDef] + 60;
+                toRet += other.getNickName() + "'s spDef won't go higher.";
+            }
+            else if(foe<0&&other.tempStats[spDef]+foe>=5&&other.baseStats[spDef]-other.tempStats[spDef]<60)
+            {
+                other.tempStats[spDef] += foe;
+                toRet += other.getNickName() + "'s spDef fell.";
+            }
+            else if( foe < 0 )
+            {
+                toRet += other.getNickName() + "'s spDef won't go lower.";
+            }
+            break;
+            
+        case spAtk:
+            self = moveSet[index].getSelfChange();
+            if( self > 0 && tempStats[spAtk] - baseStats[spAtk] < 60)
+            {
+                tempStats[spAtk] += self;
+                toRet += getNickName() + "'s spAtk rose.";
+            }
+            else if(self > 0)
+            {
+                tempStats[spAtk] = baseStats[spAtk] + 60;
+                toRet += getNickName() + "'s spAtk won't go higher.";
+            }
+            else if( self < 0 && tempStats[spAtk] + self >= 5 && baseStats[spAtk] - tempStats[spAtk] < 60)
+            {
+                tempStats[spAtk] += self;
+                toRet += getNickName() + "'s spAtk fell.";
+            }
+            else if( self < 0 )
+            {
+                toRet += getNickName() + "'s spAtk won't go lower.";
+            }
+            
+            foe = moveSet[index].getFoeChange();
+            if( foe > 0 && other.tempStats[spAtk] - other.baseStats[spAtk] < 60)
+            {
+                other.tempStats[spAtk] += foe;
+                toRet += other.getNickName() + "'s spAtk rose.";
+            }
+            else if(foe > 0)
+            {
+                other.tempStats[spAtk] = other.baseStats[spAtk] + 60;
+                toRet += other.getNickName() + "'s spAtk won't go higher.";
+            }
+            else if(foe<0&&other.tempStats[spAtk]+foe>=5&&other.baseStats[spAtk]-other.tempStats[spAtk]<60)
+            {
+                other.tempStats[spAtk] += foe;
+                toRet += other.getNickName() + "'s spAtk fell.";
+            }
+            else if( foe < 0 )
+            {
+                toRet += other.getNickName() + "'s spAtk won't go lower.";
+            }
+            break;
+    }
+    
+    return toRet;
+    
+}
+
 
 //USEMOVE HELPER FUNCTIONS FOR STATUS EFFECTS ON POKEMON USING THE MOVE
-void Pokemon::moveHelpBurn(Pokemon &other)
+string Pokemon::moveHelpBurn(Pokemon &other)
 {
-	double dmg = getMaxHP()/10;
+    string helpBurn;
+    double dmg = getMaxHP()/10;
 	reduceHP((int)(dmg));
-	cout << getNickName() << " was hurt by the burn." << endl;
+	helpBurn += getNickName() + " was hurt by the burn.";
 	
 	//checks if ainted
 	if(getHP() == 0)
 	{
-		cout << getNickName() << " has fainted." << endl;
+		helpBurn += getNickName() + " has fainted.";
 		resetTemp();
 	}
+    return helpBurn;
 }
 //USEMOVE HELPER FUNCTIONS FOR STATUS EFFECTS ON POKEMON USING THE MOVE
-void Pokemon::moveHelpPoison(Pokemon &other)
+string Pokemon::moveHelpPoison(Pokemon &other)
 {
-        double dmg = getMaxHP()/10;
-        reduceHP((int)(dmg));
-	cout << getNickName() << " was hurt by the poison." << endl;
+    string helpPoison;
+    double dmg = getMaxHP()/10;
+    reduceHP((int)(dmg));
+	helpPoison += getNickName() + " was hurt by the poison.";
 
 	//cxhecks if fainted
 	if(getHP() == 0)
 	{
-                cout << getNickName() << " has fainted." << endl;
+        helpPoison += getNickName() + " has fainted.";
 		resetTemp();
 	}
+    return helpPoison;
 }
 //USEMOVE HELPER FUNCTIONS FOR STATUS EFFECTS ON POKEMON USING THE MOVE
-void Pokemon::moveHelpAsleepFrozen()
+string Pokemon::moveHelpAsleepFrozen()
 {
+    string helpFrozen;
 	int check = rand()%2;
 
 	if(check == 1 && getStatus() == asleep)
 	{
 		changeStatus(normal);
-		cout << getNickName() << " has woken up." << endl;
+		helpFrozen += getNickName() + " has woken up.";
 	}
 	else if(check)
         {
                 changeStatus(normal);
-                cout << getNickName() << " has thawed." << endl;
+                helpFrozen += getNickName() + " has thawed.";
         }
 	else if(getStatus() == asleep)
-		cout << getNickName() << " is fast asleep." << endl;
+		helpFrozen += getNickName() + " is fast asleep.";
 	else
-		cout << getNickName() << " is frozen solid." << endl;
+	  helpFrozen += getNickName() + " is frozen solid.";
+    
+    return helpFrozen;
 }
 
 
@@ -566,7 +585,7 @@ void Pokemon::typeFromText(string t)
       type = Ice;
     else if(t == "Dragon")
       type = Dragon;
-    else 
+    else
       type = Normal;
   
 }
@@ -576,7 +595,7 @@ void Pokemon:: levelup()
 {
   level ++;
   exp = 0;
-  nxtLev *= 1.2;  
+  nxtLev *= 1.2;
 
   //add onto baseStats using multipliers
   baseStats[maxHP] += mults[maxHP];
@@ -599,11 +618,11 @@ void Pokemon::resetTemp()
 //giving a pokmon exp
 void Pokemon:: gainexp(unsigned long int xp)
 {
-  //if pokemon gains more exp than it needs to 
+  //if pokemon gains more exp than it needs to
   if(exp + xp >= nxtLev)
   {
     int nextXP = exp + xp - nxtLev;
-    levelup();                       
+    levelup();
     gainexp(nextXP);   //spill over exp
   }
   else
@@ -814,18 +833,35 @@ void Pokemon::disp()
   cout << "EXP: " << getExp() << "/" << getMaxExp() << endl;
   cout << "HP: " << getHP() << "/" << getMaxHP() << "     Speed: " << getSpeed() << endl;
   cout << "Atk: " << getAtk() << "\t" << "Def: " << getDef() << endl;
-  cout << "SpA: " << getSpAtk() << "\t" << "SpD: " << getSpDef() << endl;
+  cout << "SpA: " << getSpAtk() << "\t" << "SpD: " << getSpDef() << endl;  
 }
 
 //limited display for battle sceens
-void Pokemon::battleDisp()
+string Pokemon::battleDisp()
 {
-  cout << getNickName() << " : lvl " << getLevel() << endl;
-  cout <<  "HP: " << getHP() << "/" << getMaxHP();
-  if(getStatus() != normal)
-    cout << " " << getStatusText() << endl;
-  else
-    cout << endl;
+    string y;
+    string str;
+    string level;
+    string HP;
+    string maxHP;
+    stringstream convertLev;
+    stringstream convertHP;
+    stringstream convertmaxHP;
+    
+    if(getStatus() != normal)
+        y = " " + getStatusText(); //+ endl;
+    else
+        y = "";
+    
+    convertLev << getLevel();
+    convertLev >> level;
+    convertHP << getHP();
+    convertHP >> HP;
+    convertmaxHP << getMaxHP();
+    convertmaxHP >> maxHP;
+    str = getNickName() + " : lvl " + level + " HP: " + HP + "/" + maxHP + y;
+
+    return str;
 }
 
 //checks typing, 2 = no effect; 1 = super; 0 = normal; -1 = resistant 
@@ -988,21 +1024,33 @@ int Pokemon::checkTyping(types t)
 }
 
 //displays one move
-void Pokemon::disp_move(int i) {
+string Pokemon::disp_move(int i) {
 
-	cout << i << ": ";
-	moveSet[i].BattleDisplay();
+  string str;
+  string x;
+  stringstream convertint;
+  convertint << i;
+  convertint >> x;
+
+  str = x;
+  str += ": ";
+  str += moveSet[i].BattleDisplay();
+  return str;
 }
 
 //displays the whole moveset
-void Pokemon::disp_moves()
+vector<string> Pokemon::disp_moves()
 {
-	cout << "-------------------" << endl;
-	for(int i = 0; i < 4; i++)
-	{
-		disp_move(i);
-		cout << "-------------------" << endl;
-	}
+  vector<string> moves;
+
+  moves.push_back(disp_move(0));
+  moves.push_back(" || ");
+  moves.push_back(disp_move(1));
+  moves.push_back(disp_move(2));
+  moves.push_back(" || ");
+  moves.push_back(disp_move(3));
+
+  return moves;
 }
 
 //determines amount of xp to award killer

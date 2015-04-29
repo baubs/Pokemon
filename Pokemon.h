@@ -5,6 +5,7 @@
 #ifndef POKEMON_H
 #define POKEMON_H
 
+#include <vector>
 #include <iostream>
 #include <string>
 #include "move.h"
@@ -44,15 +45,15 @@ class Pokemon
     string getTypeText(types);   	//returns the type as a string
     int getNumber();
     void disp();           		//displays the Pokemons current state and stats 
-    void battleDisp();			//displays limited info for battle sceens
-    void disp_move(int);   		//displays just one move
-    void disp_moves();     		//displays whole move set
+    string battleDisp();			//displays limited info for battle sceens
+    string disp_move(int);   		//displays just one move
+    vector<string> disp_moves();     		//displays whole move set
     void LoadMoves(int, int);    	//loads move from moveList file to movelist member using index
-    void useMove(int, Pokemon &);   	//uses move index on pokemon
-    void moveHelpBurn(Pokemon &);            	//HELPER FUNCTIONS HANDLING STATUSES IN USEMOVE
-    void moveHelpPoison(Pokemon &);		//^
-    void moveHelpAsleepFrozen();	//^^
-    void statsChange(int, int, Pokemon &);			//^^^ but with stats
+    string useMove(int, Pokemon &);   	//uses move index on pokemon
+    string moveHelpBurn(Pokemon &);            	//HELPER FUNCTIONS HANDLING STATUSES IN USEMOVE
+    string moveHelpPoison(Pokemon &);		//^
+    string moveHelpAsleepFrozen();	//^^
+    string statsChange(int, int, Pokemon &);			//^^^ but with stats
     unsigned long int giveXP();
     void savePokemon();			//saves pokemon to saveFile.txt
   private:

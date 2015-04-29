@@ -326,10 +326,21 @@ void move::typeFromText_2(string t) {
 	else stat = normal;
 }
 
-void move::BattleDisplay() {
+string move::BattleDisplay() {
 
-	cout<<mve<<endl;
-	cout<<getTypeText(type)<<" PP "<<curr_pp<<"/"<<pp<<endl;
+  string curr;
+  string totpp;
+  stringstream convertCurr;
+  stringstream convertTotpp;
+  convertCurr << curr_pp;
+  convertCurr >> curr;
+  convertTotpp << pp;
+  convertTotpp >> totpp;
+
+        string str;
+	str += mve;
+	str += getTypeText(type) + " PP " + curr + "/" + totpp;
+	return str;
 }
 
 int move::getSpecial() {
