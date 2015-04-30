@@ -1,3 +1,6 @@
+// Brandon Aubry, Morris LaGrand, Tyler Sammons
+// Pokemon test file
+
 #include <iostream>
 #include <stdlib.h>
 #include "Pokemon.h"
@@ -23,6 +26,7 @@ const int backHeight = 96;
 //The surfaces
 SDL_Surface *background = NULL;
 SDL_Surface *choices = NULL;
+SDL_Surface *beige = NULL;
 SDL_Surface *message1 = NULL;
 SDL_Surface *message2 = NULL;
 SDL_Surface *message3 = NULL;
@@ -130,6 +134,7 @@ bool load_files()
     frontSprites = load_image( "pokemon_front_sprites.png" );
     backSprites = load_image( "pokemon_back_sprites.png" );
     choices = load_image( "choices.png" );
+    beige = load_image( "beige.png" );
 
     //Open the font
     font = TTF_OpenFont( "Chunkfive.ttf", 28 );
@@ -220,8 +225,11 @@ void backClips(int n) {
 
 int main(int argc, char* args[]) {
 
+  //seed time
+  srand(time(NULL));
+
   // Walk around map
-  go();
+  //go();
 
     // SDL Stuff
     bool quit = false;
@@ -259,6 +267,7 @@ int main(int argc, char* args[]) {
 
 	// Inform user to choose
 	message7 = TTF_RenderText_Solid(font, "Player 1: Choose", textColor);
+	apply_surface( 0, 0, beige, screen );
 	apply_surface( 0, 0, choices, screen );
 	apply_surface( 280, 370, message7, screen );
 	if( SDL_Flip( screen ) == -1 )
@@ -277,7 +286,16 @@ int main(int argc, char* args[]) {
 	    }
 	  }
 	}
+	SDL_Quit();
 
+	// Instantiate first player's pokemon
+	Pokemon user1 = Pokemon(A);
+        user1.LoadMoves(0, rand()%162 + 1);
+        user1.LoadMoves(1, rand()%162 + 1);
+        user1.LoadMoves(2, rand()%162 + 1);
+        user1.LoadMoves(3, rand()%162 + 1);
+	
+	/*
         // Inform user to choose                                                                                         
         message7 = TTF_RenderText_Solid(font, "Player 2: Choose", textColor);
 	apply_surface( 0, 0, choices, screen );
@@ -298,17 +316,38 @@ int main(int argc, char* args[]) {
 	    }
 	  }
 	}
+	*/
+       
+	// Make sure ash in correct position
+	int pos = 1;
 
-	// Apply pokemon sprites
+	while(user1.getStatus() != fainted) {
+
+	B = rand()%149 + 1;
+
+	// Run the Veridian Forest
+	pos = go(pos);
+
+	//Initialize                                                                
+	if( init() == false )
+	  {
+	    return 1;
+	  }
+	//Load the files                                                            
+	if( load_files() == false )
+	  {
+	    return 1;
+	  }
+
+	// Create Battle Screen
 	backClips(A);
 	frontClips(B);
 	message6 = TTF_RenderText_Solid(font2, "# MOVES #", textColor);
-	SDL_FreeSurface( message7 );
-	SDL_FreeSurface( choices );
 	apply_surface( 0, 0, background, screen );
 	apply_surface( 360, 15, frontSprites, screen, &clips );
 	apply_surface( 120, 174, backSprites, screen, &clips2 );
 	apply_surface( 25, 295, message6, screen);
+	
 
 	//Update Screen
 	if( SDL_Flip( screen ) == -1 )
@@ -317,18 +356,18 @@ int main(int argc, char* args[]) {
 	  }
 
 
-	Pokemon user1 = Pokemon(A);
+	//	Pokemon user1 = Pokemon(A);
 	Pokemon user2 = Pokemon(B);
 
-	user1.LoadMoves(0, 49);
-	user1.LoadMoves(1, 77);
-	user1.LoadMoves(2, 89);
-	user1.LoadMoves(3, 110);
+	//	user1.LoadMoves(0, 49);
+	//	user1.LoadMoves(1, 77);
+	//	user1.LoadMoves(2, 89);
+	//	user1.LoadMoves(3, 110);
 
-	user2.LoadMoves(0, 22);
-	user2.LoadMoves(1, 141);
-	user2.LoadMoves(2, 33);
-	user2.LoadMoves(3, 93);
+	user2.LoadMoves(0, rand()%162 + 1);
+	user2.LoadMoves(1, rand()%162 + 1);
+	user2.LoadMoves(2, rand()%162 + 1);
+	user2.LoadMoves(3, rand()%162 + 1);
 
 	int turn = 2;
 	int move = 5;
@@ -390,6 +429,7 @@ int main(int argc, char* args[]) {
 					    case SDLK_1: move = 1; break;
 					    case SDLK_2: move = 2; break;
 					    case SDLK_3: move = 3; break;
+					    case SDLK_4: exit(1);
 					    }
 					}
 				    }
@@ -433,7 +473,7 @@ int main(int argc, char* args[]) {
 				  {
 				    return 1;
 				  }
-
+				/*
 				// Display all moves
                                 allMoves = user2.disp_moves();
                                 moves1 = allMoves[0] + allMoves[1] + allMoves[2];
@@ -448,8 +488,8 @@ int main(int argc, char* args[]) {
 				  {
 				    return 1;
 				   }
-								
-
+				*/				
+				
 				//If there's an event to handle
 				while( quit == false) {
 				  if( SDL_PollEvent( &event ) )
@@ -457,13 +497,14 @@ int main(int argc, char* args[]) {
 				      //If a key was pressed
 				      if( event.type == SDL_KEYDOWN )
 					{
-					  switch( event.key.keysym.sym )
+					  /*  switch( event.key.keysym.sym )
 					    {
 					    case SDLK_0: move = 0; break;
 					    case SDLK_1: move = 1; break;
 					    case SDLK_2: move = 2; break;
 					    case SDLK_3: move = 3; break;
-					    }
+					    }*/
+					  move = rand()%3;
 					}
   				    }
 				  if (move != 5 ) {
@@ -486,5 +527,7 @@ int main(int argc, char* args[]) {
 				move = 5;
 				break;
 		}
-	}	
+	}
+	SDL_Quit();
+	}
 }

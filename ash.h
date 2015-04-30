@@ -31,7 +31,7 @@ class Ash
 
  public:
   //Initializes the variables
-  Ash();
+  Ash(int = 1);
 
   //Handles input
   void handle_events();
@@ -248,11 +248,32 @@ void clean_up2()
 }
 
 
-Ash::Ash()
+Ash::Ash(int position)
 {
   //Initialize movement variables
-  xoffSet = 350;
-  yoffSet = 630;
+  if (position == 1) {
+    xoffSet = 350;
+    yoffSet = 630;
+  
+  }
+  if (position == 2) {
+    xoffSet = 173;
+    yoffSet = 616;
+  }
+  if (position == 3) {
+    xoffSet = 330;
+    yoffSet = 230;
+  }
+  if (position == 4) {
+    xoffSet = 175;
+    yoffSet = 75;
+  }
+  if (position == 5) {
+    xoffSet = 350;
+    yoffSet = 630;
+  }
+
+  // Velocities
   xvelocity = 0;
   yvelocity = 0;
 
@@ -301,15 +322,72 @@ int Ash::move()
     {
       xoffSet -= xvelocity;
     }
-  if((yoffSet < 648) || (yoffSet + ASH_HEIGHT > 33)) {
+  if((yoffSet > 648) || (yoffSet + ASH_HEIGHT < 33)) {
     yoffSet -= yvelocity;
   }
 
-  //More Bounds
 
-  //Exit screen
-  //  if( ( xoffset < ) || (xoffSet + ASH_WIDTH > ))
-  // return 1;
+  // Barrier 1 
+   if ( xoffSet + ASH_WIDTH > 385 && xoffSet < 538 && yoffSet + ASH_HEIGHT > 75 && yoffSet < 140)
+     xoffSet -= xvelocity;
+  
+   if ( yoffSet + ASH_HEIGHT > 75 && yoffSet < 140 && xoffSet + ASH_WIDTH > 385 && xoffSet < 538 )
+    yoffSet -= yvelocity;
+
+  // Barrier 2
+  if ( xoffSet + ASH_WIDTH > 240 && xoffSet < 450 && yoffSet + ASH_HEIGHT > 270 && yoffSet < 430)
+    xoffSet -= xvelocity;
+
+  if ( yoffSet + ASH_HEIGHT > 270 && yoffSet < 430 && xoffSet + ASH_WIDTH > 240 && xoffSet < 450 )
+    yoffSet -= yvelocity;
+
+  // Barrier 3
+  if ( xoffSet + ASH_WIDTH > 394 && xoffSet < 450 && yoffSet + ASH_HEIGHT > 200 && yoffSet < 617)
+    xoffSet -= xvelocity;
+
+  if ( yoffSet + ASH_HEIGHT > 200 && yoffSet < 617 && xoffSet + ASH_WIDTH > 394 && xoffSet < 450 )
+    yoffSet -= yvelocity;
+
+  // Barrier 3
+  if ( xoffSet + ASH_WIDTH > 75 && xoffSet < 170 && yoffSet + ASH_HEIGHT > 454 && yoffSet < 650)
+    xoffSet -= xvelocity;
+
+  if ( yoffSet + ASH_HEIGHT > 454 && yoffSet < 650&& xoffSet + ASH_WIDTH > 75 && xoffSet < 170 )
+    yoffSet -= yvelocity;
+
+  // Barrier 4
+  if ( xoffSet + ASH_WIDTH > 300 && xoffSet < 325&& yoffSet + ASH_HEIGHT > 50 && yoffSet < 225)
+    xoffSet -= xvelocity;
+
+  if ( yoffSet + ASH_HEIGHT > 50 && yoffSet < 225 && xoffSet + ASH_WIDTH > 300 && xoffSet < 325 )
+    yoffSet -= yvelocity;
+
+  // Barrier 5
+  if ( xoffSet + ASH_WIDTH > 215 && xoffSet < 243 && yoffSet + ASH_HEIGHT > 125 && yoffSet < 265)
+    xoffSet -= xvelocity;
+
+  if ( yoffSet + ASH_HEIGHT > 125 && yoffSet < 265 && xoffSet + ASH_WIDTH > 215 && xoffSet < 243 )
+    yoffSet -= yvelocity;
+
+
+  // Create Battle Grounds
+  if(( xoffSet + ASH_WIDTH > 195 && xoffSet < 326 && yoffSet + ASH_HEIGHT < 604 && yoffSet > 462 )) {
+    return 2;
+  }
+  
+  //195, 326, 604, 462, 2
+  if(( xoffSet + ASH_WIDTH > 330 && xoffSet < 445 && yoffSet + ASH_HEIGHT < 225 && yoffSet > 120 )) {
+    return 3;
+  }
+
+  if(( xoffSet + ASH_WIDTH > 240 && xoffSet < 300 && yoffSet + ASH_HEIGHT < 225 && yoffSet > 140 )) {
+    return 4;
+  }
+
+  if(( xoffSet + ASH_WIDTH > 160 && xoffSet < 215 && yoffSet + ASH_HEIGHT < 285 && yoffSet > 140 )) {
+    return 5;
+    }
+
   return 0;
 }
 
@@ -367,21 +445,24 @@ void Ash::show()
   }
 }
 
-int go( )
+int go(int position)
 {
   //Quit flag
   bool quit = false;
+  int nothing = 0;
 
   //Initialize
   if( init2() == false )
     {
       return 1;
+      //nothing = 0;
     }
 
   //Load the files
   if( load_files2() == false )
     {
       return 1;
+      //nothing = 0;
     }
 
   //Clip the sprite sheet
@@ -391,7 +472,7 @@ int go( )
   Timer fps;
 
   //Ash Ketchum
-  Ash test;
+  Ash test(position);
 
   //While the user hasn't quit
   while( quit == false )
@@ -409,13 +490,26 @@ int go( )
 	  if( event2.type == SDL_QUIT )
             {
 	      //Quit the program
+	      return 1;
 	      quit = true;
+
             }
         }
 
       //Move Ash
-      if (test.move() == 1)
-	quit = true;
+      int result = test.move();
+      if (result == 2) {
+	return 2;
+      }
+      if (result == 3) {
+	return 3;
+      }
+      if (result == 4) {
+	return 4;
+      }
+      if (result == 5) {
+	return 5;
+      }
 
       //Show Ash on the screen
       test.show();
@@ -423,7 +517,8 @@ int go( )
       //Update the screen
       if( SDL_Flip( screen2 ) == -1 )
         {
-	  return 1;
+	  //	  return 1;
+	  nothing = 0;
         }
 
       //Cap the frame rate
@@ -436,6 +531,6 @@ int go( )
   //Clean up
   clean_up2();
 
-  return 0;
+  //  return 0;
 }
 

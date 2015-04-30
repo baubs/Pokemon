@@ -633,6 +633,11 @@ void Pokemon::gainHP(int h)
 {
 	if(baseStats[HP] + h > baseStats[maxHP])
 		baseStats[HP] = baseStats[maxHP];
+	if(baseStats[HP] + h < 0 )
+	{
+		baseStats[HP] = 0;
+		changeStatus(fainted);
+	}
 	else
 		baseStats[HP] += h;
 }
