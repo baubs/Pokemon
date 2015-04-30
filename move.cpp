@@ -75,7 +75,7 @@ int move::get_acc() {
 //function to return the power points of the move
 int move::get_pp() {
 
-	return pp;
+	return curr_pp;
 }
 
 //returning the status change of the move

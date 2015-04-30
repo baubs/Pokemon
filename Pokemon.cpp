@@ -74,9 +74,9 @@ Pokemon::~Pokemon()
 Pokemon::Pokemon(int num)
 {
   srand(time(NULL));
-  if(num < 1 || num > 150)
+  if(num < 1 || num > 151)
   {
-     cout << "Number should be between 1-150" << endl;
+     cout << "Number should be between 1-151" << endl;
      return;
   }
   
@@ -132,6 +132,12 @@ string Pokemon::useMove(int index, Pokemon &other)
 	int hit = (rand()%100);      //random number to check if move hit or not
 	status s = moveSet[index].get_status();   //gets status effect of move
 
+
+	if(moveSet[index].get_pp() <= 0)
+	{
+		str1 += moveSet[index].getName() + " is out of PP.";
+		return str1;
+	}
 
 	//checks typing effectivness against target type
 	double typeEffect = other.checkTyping(moveSet[index].get_type()); 
